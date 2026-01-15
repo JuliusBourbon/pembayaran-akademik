@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('programstudi', function (Blueprint $table){
             $table->id('id_prodi', 3);
             $table->string('nama_prodi', 25);
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 

@@ -25,6 +25,8 @@ return new class extends Migration
             $table->foreign('id_prodi')->references('id_prodi')->on('programstudi')->onDelete('cascade');
             $table->unsignedBigInteger('id_fakultas');
             $table->foreign('id_fakultas')->references('id_fakultas')->on('fakultas')->onDelete('cascade');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 

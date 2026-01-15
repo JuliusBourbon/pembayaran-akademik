@@ -17,6 +17,8 @@ return new class extends Migration
             $table->text('alamat');
             $table->string('telepon', 15);
             $table->string('email', 64);
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreign('nim')->references('nim')->on('mahasiswa')->onDelete('cascade');
             $table->unsignedBigInteger('nip');
             $table->foreign('nip')->references('nip')->on('bendahara')->onDelete('cascade');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 

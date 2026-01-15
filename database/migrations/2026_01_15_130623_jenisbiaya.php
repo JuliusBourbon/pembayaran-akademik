@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id('id', 3);
             $table->string('nama', 25);
             $table->integer('jumlah_biaya');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 

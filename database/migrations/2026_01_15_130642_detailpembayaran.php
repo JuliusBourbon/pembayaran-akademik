@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id');
             $table->foreign('id')->references('id')->on('jenisbiaya')->onDelete('cascade');
             $table->integer('jumlahbiaya');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 
