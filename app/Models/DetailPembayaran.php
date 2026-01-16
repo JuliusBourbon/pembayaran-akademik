@@ -10,6 +10,7 @@ class detailpembayaran extends Model
     use HasFactory;
 
     protected $table = 'detail_pembayaran';
+    protected $primaryKey = 'noreg';
 
     protected $fillable = [
         'noreg',

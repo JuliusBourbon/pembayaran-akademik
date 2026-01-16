@@ -10,7 +10,6 @@ class programstudi extends Model
     use HasFactory;
 
     protected $table = 'programstudi';
-
     protected $primaryKey = 'id_prodi';
 
     protected $fillable = [

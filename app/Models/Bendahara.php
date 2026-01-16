@@ -10,6 +10,7 @@ class bendahara extends Model
     use HasFactory;
 
     protected $table = 'bendahara';
+    protected $primaryKey = 'nip';
 
     protected $fillable = [
         'nip',
