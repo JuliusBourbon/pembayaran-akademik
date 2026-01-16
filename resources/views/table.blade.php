@@ -9,10 +9,13 @@
 </head>
 <body>
     <div class="h-full w-full">
-        <div class="h-screen flex flex-col gap-2 justify-center items-center">
+        <div class="h-full flex flex-col gap-2 justify-center items-center">
             <div>
                 <div class="flex justify-between">
                     <h1>Program Studi</h1>
+                    <div>
+                        <a href="{{ url('table/tambah') }}">Tambah</a>
+                    </div>
                 </div>
                 <table>
                     <thead>
@@ -20,6 +23,7 @@
                         <th class="p-2 border">nama_prodi</th>
                         <th class="p-2 border">created_at</th>
                         <th class="p-2 border">updated_at</th>
+                        <th class="p-2 border">Aksi</th>
                     </thead>
                     <tbody>
                         @foreach ($dataprodi as $dp)
@@ -28,6 +32,14 @@
                                 <td class="p-2 border">{{ $dp->nama_prodi }}</td>
                                 <td class="p-2 border">{{ $dp->created_at }}</td>
                                 <td class="p-2 border">{{ $dp->updated_at }}</td>
+                                <td class="p-2 border">
+                                    <form class="text-red-400" action="{{ route('prodi.delete', $dp->id_prodi) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                        @csrf
+                                        @method('DELETE') 
+                                        <button class="" type="submit">Hapus</button>
+                                    </form>
+                                    <a href="{{ route('prodi.editpage', $dp->id_prodi) }}">Ubah</a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
