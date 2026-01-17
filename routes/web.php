@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\FakultasController;
+use App\Http\Controllers\JenisController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\TableController;
@@ -37,3 +38,9 @@ Route::post('/table/tambahbdh', [BendaharaController::class, 'store'])->name('bd
 Route::delete('/table/hapusbdh/{id}', [BendaharaController::class, 'delete'])->name('bdh.delete');
 Route::get('/table/ubahbdh/{id}', [BendaharaController::class, 'updateView'])->name('bdh.updateview');
 Route::post('/table/ubahbdh/{id}', [BendaharaController::class, 'update'])->name('bdh.update');
+
+Route::get('/table/tambahjenis', [JenisController::class, 'createView'])->name('jenis.createview');
+Route::post('/table/tambahjenis', [JenisController::class, 'store'])->name('jenis.store');
+Route::delete('/table/hapusjenis/{id}', [JenisController::class, 'delete'])->name('jenis.delete');
+Route::get('/table/ubahjenis/{id}', [JenisController::class, 'updateView'])->name('jenis.updateview');
+Route::post('/table/ubahjenis/{id}', [JenisController::class, 'update'])->name('jenis.update');
