@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\FakultasController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\ProdiController;
@@ -30,3 +31,9 @@ Route::post('/table/tambahmhs', [MahasiswaController::class, 'store'])->name('mh
 Route::delete('/table/hapusmhs/{id}', [MahasiswaController::class, 'delete'])->name('mhs.delete');
 Route::get('/table/ubahmhs/{id}', [MahasiswaController::class, 'updateView'])->name('mhs.updateview');
 Route::post('/table/ubahmhs/{id}', [MahasiswaController::class, 'update'])->name('mhs.update');
+
+Route::get('/table/tambahbdh', [BendaharaController::class, 'createView'])->name('bdh.createview');
+Route::post('/table/tambahbdh', [BendaharaController::class, 'store'])->name('bdh.store');
+Route::delete('/table/hapusbdh/{id}', [BendaharaController::class, 'delete'])->name('bdh.delete');
+Route::get('/table/ubahbdh/{id}', [BendaharaController::class, 'updateView'])->name('bdh.updateview');
+Route::post('/table/ubahbdh/{id}', [BendaharaController::class, 'update'])->name('bdh.update');
