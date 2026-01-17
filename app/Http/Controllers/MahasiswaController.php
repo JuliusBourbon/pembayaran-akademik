@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
 {
-    public function addView(){
+    public function createView(){
         $dataprodi = programstudi::all();
         $datafakultas = fakultas::all();
 
@@ -20,7 +20,7 @@ class MahasiswaController extends Controller
         ]);
     }
 
-    public function editView($id){
+    public function updateView($id){
         $dataprodi = programstudi::all();
         $datafakultas = fakultas::all();
         $mahasiswa = mahasiswa::where('nim', $id)->firstOrFail();

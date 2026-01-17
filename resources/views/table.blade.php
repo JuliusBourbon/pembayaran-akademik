@@ -13,7 +13,7 @@
             <div>
                 <div class="flex justify-between">
                     <h1>Program Studi</h1>
-                    <a href="{{ route('prodi.addview') }}">Tambah</a>
+                    <a href="{{ route('prodi.createview') }}">Tambah</a>
                 </div>
                 <table>
                     <thead>
@@ -36,7 +36,7 @@
                                         @method('DELETE') 
                                         <button class="" type="submit">Hapus</button>
                                     </form>
-                                    <a href="{{ route('prodi.editview', $dp->id_prodi) }}">Ubah</a>
+                                    <a href="{{ route('prodi.updateview', $dp->id_prodi) }}">Ubah</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -46,7 +46,7 @@
             <div>
                 <div class="flex justify-between">
                     <h1>Fakultas</h1>
-                    <a href="{{ route('fakul.addview') }}">Tambah</a>
+                    <a href="{{ route('fakul.createview') }}">Tambah</a>
                 </div>
                 <table>
                     <thead>
@@ -70,7 +70,7 @@
                                         @method('DELETE') 
                                         <button class="" type="submit">Hapus</button>
                                     </form>
-                                    <a href="{{ route('fakul.editview', $fk->id_fakultas) }}">Ubah</a>
+                                    <a href="{{ route('fakul.updateview', $fk->id_fakultas) }}">Ubah</a>
                                 </td>
                         </tr>
                         @endforeach
@@ -80,7 +80,7 @@
             <div>
                 <div class="flex justify-between">
                     <h1>Mahasiswa</h1>
-                    <a href="{{ route('mhs.addview') }}">Tambah</a>
+                    <a href="{{ route('mhs.createview') }}">Tambah</a>
                 </div>
                 <table>
                     <thead>
@@ -122,7 +122,7 @@
                                         @method('DELETE') 
                                         <button class="" type="submit">Hapus</button>
                                     </form>
-                                    <a href="{{ route('mhs.editview', $mhs->nim) }}">Ubah</a>
+                                    <a href="{{ route('mhs.updateview', $mhs->nim) }}">Ubah</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -160,7 +160,7 @@
                                         @method('DELETE') 
                                         <button class="" type="submit">Hapus</button>
                                     </form>
-                                    <a href="{{ route('prodi.editview', $dp->id_prodi) }}">Ubah</a>
+                                    <a href="{{ route('prodi.updateview', $dp->id_prodi) }}">Ubah</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -194,7 +194,7 @@
                                         @method('DELETE') 
                                         <button class="" type="submit">Hapus</button>
                                     </form>
-                                    <a href="{{ route('prodi.editview', $dp->id_prodi) }}">Ubah</a>
+                                    <a href="{{ route('prodi.updateview', $dp->id_prodi) }}">Ubah</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -232,7 +232,7 @@
                                         @method('DELETE') 
                                         <button class="" type="submit">Hapus</button>
                                     </form>
-                                    <a href="{{ route('prodi.editview', $dp->id_prodi) }}">Ubah</a>
+                                    <a href="{{ route('prodi.updateview', $dp->id_prodi) }}">Ubah</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -266,7 +266,7 @@
                                         @method('DELETE') 
                                         <button class="" type="submit">Hapus</button>
                                     </form>
-                                    <a href="{{ route('prodi.editview', $dp->id_prodi) }}">Ubah</a>
+                                    <a href="{{ route('prodi.updateview', $dp->id_prodi) }}">Ubah</a>
                                 </td>
                             </tr>
                         @endforeach

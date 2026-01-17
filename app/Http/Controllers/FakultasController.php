@@ -7,17 +7,17 @@ use Illuminate\Http\Request;
 
 class FakultasController extends Controller
 {
-    public function addView(){
+    public function createview(){
         return view('addFakul');
     }
 
-    public function editView($id){
+    public function updateView($id){
         $fakultas = fakultas::where('id_fakultas', $id)->firstOrFail();
 
         return view('editFakul', ['datafakul' => $fakultas]);
     }
 
-    public function storeFakul(Request $request) {
+    public function store(Request $request) {
         $validatedData = $request->validate([
             'nama_fakultas' => 'required|string|max:20'
         ]);
@@ -27,14 +27,14 @@ class FakultasController extends Controller
         return redirect('/table');
     }
 
-    public function deleteFakul($id){
+    public function delete($id){
         $fakultas = fakultas::where('id_fakultas', $id)->firstOrFail();
         $fakultas->delete();
 
         return redirect('/table')->with('success', 'Data berhasil dihapus');
     }
 
-    public function editFakul(Request $request, $id){
+    public function update(Request $request, $id){
         $fakultas = fakultas::where('id_fakultas', $id)->firstOrFail();
 
         $validatedData = $request->validate([

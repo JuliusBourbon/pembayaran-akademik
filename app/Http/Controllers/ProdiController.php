@@ -7,17 +7,17 @@ use Illuminate\Http\Request;
 
 class ProdiController extends Controller
 {
-    public function addView(){
+    public function createView(){
         return view('addProdi');
     }
 
-    public function editView($id){
+    public function updateView($id){
         $prodi = ProgramStudi::where('id_prodi', $id)->firstOrFail();
 
         return view('editProdi', ['dataprodi' => $prodi]);
     }
 
-    public function storeProdi(Request $request) {
+    public function store(Request $request) {
         $validatedData = $request->validate([
             'nama_prodi' => 'required|string|max:20'
         ]);
@@ -27,14 +27,14 @@ class ProdiController extends Controller
         return redirect('/table');
     }
 
-    public function deleteProdi($id){
+    public function delete($id){
         $prodi = programstudi::where('id_prodi', $id)->firstOrFail();
         $prodi->delete();
 
         return redirect('/table')->with('success', 'Data berhasil dihapus');
     }
 
-    public function editProdi(Request $request, $id){
+    public function update(Request $request, $id){
         $prodi = programstudi::where('id_prodi', $id)->firstOrFail();
 
         $validatedData = $request->validate([
