@@ -4,6 +4,7 @@ use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\FakultasController;
 use App\Http\Controllers\JenisController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\PembayaranContoller;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Route;
@@ -44,3 +45,9 @@ Route::post('/table/tambahjenis', [JenisController::class, 'store'])->name('jeni
 Route::delete('/table/hapusjenis/{id}', [JenisController::class, 'delete'])->name('jenis.delete');
 Route::get('/table/ubahjenis/{id}', [JenisController::class, 'updateView'])->name('jenis.updateview');
 Route::post('/table/ubahjenis/{id}', [JenisController::class, 'update'])->name('jenis.update');
+
+Route::get('/table/tambahpby', [PembayaranContoller::class, 'createView'])->name('pby.createview');
+Route::post('/table/tambahpby', [PembayaranContoller::class, 'store'])->name('pby.store');
+Route::delete('/table/hapuspby/{id}', [PembayaranContoller::class, 'delete'])->name('pby.delete');
+Route::get('/table/ubahpby/{id}', [PembayaranContoller::class, 'updateView'])->name('pby.updateview');
+Route::post('/table/ubahpby/{id}', [PembayaranContoller::class, 'update'])->name('pby.update');

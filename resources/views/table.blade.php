@@ -206,8 +206,10 @@
                 </table>
             </div>
             <div>
-                <h1>Pembayaran</h1>
-                <a href="">Tambah</a>
+                <div class="flex justify-between">
+                    <h1>Pembayaran</h1>
+                    <a href="{{ route('pby.createview') }}">Tambah</a>
+                </div>
                 <table>
                     <thead>
                         <th class="p-2 border">id</th>
@@ -231,12 +233,12 @@
                                 <td class="p-2 border">{{ $pb->created_at }}</td>
                                 <td class="p-2 border">{{ $pb->updated_at }}</td>
                                 <td class="p-2 border">
-                                    <form class="text-red-400" action="{{ route('prodi.delete', $dp->id_prodi) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                    <form class="text-red-400" action="{{ route('pby.delete', $pb->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                         @csrf
                                         @method('DELETE') 
                                         <button class="" type="submit">Hapus</button>
                                     </form>
-                                    <a href="{{ route('prodi.updateview', $dp->id_prodi) }}">Ubah</a>
+                                    <a href="{{ route('pby.updateview', $pb->id) }}">Ubah</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -244,8 +246,10 @@
                 </table>
             </div>
             <div>
-                <h1>Detail Pembayaran</h1>
-                <a href="">Tambah</a>
+                <div class="flex justify-between">
+                    <h1>Detail Pembayaran</h1>
+                    <a href="{{ route('pby.createview') }}">Tambah</a>
+                </div>
                 <table>
                     <thead>
                         <th class="p-2 border">noreg</th>
