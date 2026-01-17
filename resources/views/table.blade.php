@@ -78,8 +78,10 @@
                 </table>
             </div>
             <div>
-                <h1>Mahasiswa</h1>
-                <a href="">Tambah</a>
+                <div class="flex justify-between">
+                    <h1>Mahasiswa</h1>
+                    <a href="{{ route('mhs.addview') }}">Tambah</a>
+                </div>
                 <table>
                     <thead>
                         <th class="p-2 border">nim</th>
@@ -115,12 +117,12 @@
                                 <td class="p-2 border">{{ $mhs->created_at }}</td>
                                 <td class="p-2 border">{{ $mhs->updated_at }}</td>
                                 <td class="p-2 border">
-                                    <form class="text-red-400" action="{{ route('prodi.delete', $dp->id_prodi) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                    <form class="text-red-400" action="{{ route('mhs.delete', $mhs->nim) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                         @csrf
                                         @method('DELETE') 
                                         <button class="" type="submit">Hapus</button>
                                     </form>
-                                    <a href="{{ route('prodi.editview', $dp->id_prodi) }}">Ubah</a>
+                                    <a href="{{ route('mhs.editview', $mhs->nim) }}">Ubah</a>
                                 </td>
                             </tr>
                         @endforeach

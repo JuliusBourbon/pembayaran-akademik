@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FakultasController;
+use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Route;
@@ -23,3 +24,9 @@ Route::post('/table/tambahfakul', [FakultasController::class, 'storeFakul'])->na
 Route::delete('/table/hapusfakul/{id}', [FakultasController::class, 'deleteFakul'])->name('fakul.delete');
 Route::get('/table/ubahFakul/{id}', [FakultasController::class, 'editView'])->name('fakul.editview');
 Route::post('/table/ubahFakul/{id}', [FakultasController::class, 'editFakul'])->name('fakul.update');
+
+Route::get('/table/tambahmhs', [MahasiswaController::class, 'addView'])->name('mhs.addview');
+Route::post('/table/tambahmhs', [MahasiswaController::class, 'store'])->name('mhs.store');
+Route::delete('/table/hapusmhs/{id}', [MahasiswaController::class, 'delete'])->name('mhs.delete');
+Route::get('/table/ubahmhs/{id}', [MahasiswaController::class, 'editView'])->name('mhs.editview');
+Route::post('/table/ubahmhs/{id}', [MahasiswaController::class, 'update'])->name('mhs.update');
