@@ -2,28 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class mahasiswa extends Model
+class Mahasiswa extends Model
 {
-    use HasFactory;
-
     protected $table = 'mahasiswa';
-
     protected $primaryKey = 'nim';
+    public $incrementing = false;
+    protected $keyType = 'string';
+    public $timestamps = false;
+    protected $guarded = [];
 
-    protected $fillable = [
-        'nim',
-        'nama',
-        'alamat',
-        'telepon',
-        'telepon_ortu',
-        'user',
-        'password',
-        'email',
-        'virtual_account',
-        'id_prodi',
-        'id_fakultas',
-    ];
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class, 'kode_prodi', 'kode_prodi');
+    }
+
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'nim', 'nim');
+    }
 }
