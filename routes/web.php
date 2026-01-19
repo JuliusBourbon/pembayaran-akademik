@@ -2,13 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\JenisController;
-use App\Http\Controllers\ProdiController;
-use App\Http\Controllers\TableController;
-use App\Http\Controllers\FakultasController;
-use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\MahasiswaController;
-use App\Http\Controllers\PembayaranContoller;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,6 +12,7 @@ Route::get('/login', [AuthController::class, 'loginView'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+Route::get('/cari-mahasiswa', [MahasiswaController::class, 'index']);
 
 // Route::get('/table', [TableController::class, 'read'], function () {
 //     return view('table');

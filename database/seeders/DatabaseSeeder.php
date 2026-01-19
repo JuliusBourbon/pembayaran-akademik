@@ -9,10 +9,12 @@ use Illuminate\Database\Seeder;
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
-    public function run(): void
+   public function run()
     {
         $this->call([
-            UserSeeder::class
+            UserSeeder::class,      
+            ProdiSeeder::class,   
+            MahasiswaSeeder::class,
         ]);
     }
 }
