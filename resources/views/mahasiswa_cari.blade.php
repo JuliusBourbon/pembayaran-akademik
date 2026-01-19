@@ -60,7 +60,7 @@
                             <a href="#">Detail</a>
                             
                             @if($mhs->nim == null)
-                                | <a href="#">Bayar</a>
+                                | <a href="{{ url('/transaksi/bayar/' . $mhs->no_reg) }}">Bayar</a>
                             @endif
                         </td>
                     </tr>
