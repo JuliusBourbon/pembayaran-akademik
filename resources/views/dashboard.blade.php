@@ -6,14 +6,8 @@
 </head>
 <body @include('navbar')>
     @yield('content')
-    <h1>Dashboard</h1>
-    
-    <p>Halo, {{ session('username') }}</p>
-    <p>Role: {{ session('role') }}</p>
-
-    <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit">Logout</button>
-    </form>
+    <h1 class="text-center">Dashboard</h1>
+    <p class="italic text-center">"Tetap bekerja walaupun gaji bercanda"</p><br>
+    <p class="text-center"">gatau si tampilin apa aja disini</p>
 </body>
 </html>
