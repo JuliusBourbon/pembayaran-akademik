@@ -10,7 +10,10 @@
     <div style="padding: 10px; background-color: #f0f0f0; margin-bottom: 20px;">
         <b>Halo, {{ Session::get('username') }} ({{ Session::get('role') }})</b> |
         <a href="{{ url('/dashboard') }}">Kembali ke Dashboard</a> |
-        <a href="{{ url('/logout') }}">Logout</a>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit">Logout</button>
+        </form>
     </div>
 
     <h1>Cari Data Mahasiswa</h1>
