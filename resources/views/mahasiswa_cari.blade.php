@@ -10,7 +10,7 @@
 
     @include('navbar')
 
-    <main class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8 mt-16">
+    <main class="max-w-7xl mx-auto py-10 px-6 lg:px-8 mt-16">
         
         <div class="md:flex md:items-center md:justify-between mb-6 px-4 sm:px-0">
             <div class="min-w-0 flex-1">
