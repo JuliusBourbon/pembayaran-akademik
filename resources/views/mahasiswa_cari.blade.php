@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pencarian Mahasiswa</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-
+<body @include('navbar')>
+    @yield('content')
     <div style="padding: 10px; background-color: #f0f0f0; margin-bottom: 20px;">
         <b>Halo, {{ Session::get('username') }} ({{ Session::get('role') }})</b> |
         <a href="{{ url('/dashboard') }}">Kembali ke Dashboard</a> |

@@ -2,20 +2,11 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Input Pembayaran Registrasi</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .box { border: 1px solid #ccc; padding: 20px; width: 50%; margin-bottom: 20px; }
-        .info-table td { padding: 5px; }
-        .input-group { margin-bottom: 15px; }
-        input, select { padding: 8px; width: 100%; box-sizing: border-box; }
-        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        .alert { color: red; font-size: 0.9em; }
-    </style>
+    <title>Input Pembayaran Registrasi</title>\
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-
+<body @include('navbar')>
+    @yield('content')
     <h2>Input Transaksi Pembayaran</h2>
     <a href="{{ url('/cari-mahasiswa?q='.$mhs->no_reg) }}">&laquo; Kembali</a>
     <hr>

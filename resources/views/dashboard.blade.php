@@ -2,9 +2,11 @@
 <html>
 <head>
     <title>Dashboard</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    <h1>Dashboard!</h1>
+<body @include('navbar')>
+    @yield('content')
+    <h1>Dashboard</h1>
     
     <p>Halo, {{ session('username') }}</p>
     <p>Role: {{ session('role') }}</p>
