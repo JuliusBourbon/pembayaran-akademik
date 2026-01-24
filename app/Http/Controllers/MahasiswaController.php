@@ -33,4 +33,27 @@ class MahasiswaController extends Controller
             'keyword' => $keyword
         ]);
     }
+
+    public function detail($no_reg) {
+        if (!Session::has('is_logged_in')) {
+            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        $mahasiswa = DB::select("
+            SELECT m.*, p.nama_prodi 
+            FROM mahasiswa m 
+            LEFT JOIN prodi p ON m.kode_prodi = p.kode_prodi
+            WHERE m.no_reg = ?
+        ", [$no_reg]);
+
+        if (empty($mahasiswa)) {
+            return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+
+        // if ($mahasiswa[0]->nim != null) {
+        //     return back()->with('error', 'Mahasiswa ini sudah lunas dan memiliki NIM.');
+        // }
+
+        return view('detail_mahasiswa', ['mahasiswa' => $mahasiswa[0]]);
+    }
 }

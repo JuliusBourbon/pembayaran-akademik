@@ -16,6 +16,7 @@ Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard'
 Route::get('/cari-mahasiswa', [MahasiswaController::class, 'index']);
 Route::get('/transaksi/bayar/{no_reg}', [TransaksiController::class, 'create']);
 Route::post('/transaksi/proses', [TransaksiController::class, 'store']);
+Route::get('/detail/{no_reg}', [MahasiswaController::class, 'detail'])->name('detail');
 
 // Route::get('/table', [TableController::class, 'read'], function () {
 //     return view('table');
