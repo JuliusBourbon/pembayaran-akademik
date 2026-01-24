@@ -60,9 +60,7 @@
                                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Nama Mahasiswa</th>
                                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Prodi</th>
                                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Status</th>
-                                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                                        <span class="sr-only">Aksi</span>
-                                    </th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-200 bg-white">
@@ -92,12 +90,12 @@
                                             <a href="#" class="text-slate-600 hover:text-blue-600">Detail</a>
                                             
                                             @if($mhs->nim == null)
-                                                <div class="flex gap-2 cursor-pointer items-center text-blue-600 hover:text-blue-900 border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-md transition">
-                                                    <a href="{{ url('/transaksi/bayar/' . $mhs->no_reg) }}">Bayar </a>
+                                                <a class="flex gap-2 cursor-pointer items-center text-blue-600 hover:text-blue-900 border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-md transition" href="{{ url('/transaksi/bayar/' . $mhs->no_reg) }}">
+                                                    Bayar 
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
                                                     </svg>
-                                                </div>
+                                                </a>
                                             @endif
                                         </div>
                                     </td>
