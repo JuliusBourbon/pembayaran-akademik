@@ -110,7 +110,7 @@
 
                         <div class="mt-8 flex items-center justify-end gap-x-6 border-t border-slate-900/10 pt-6">
                             <a href="{{ url('/cari-mahasiswa') }}" class="text-sm font-semibold text-slate-900 hover:text-red-600">Batal</a>
-                            <button type="submit" class="rounded-md cursor-pointer bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all hover:shadow-md">Simpan Transaksi</button>
+                            <button type="submit" class="rounded-md cursor-pointer bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all hover:shadow-md">Simpan Transaksi</button>
                         </div>
                     </form>
                 </div>
