@@ -17,6 +17,10 @@ Route::get('/cari-mahasiswa', [MahasiswaController::class, 'index']);
 Route::get('/transaksi/bayar/{no_reg}', [TransaksiController::class, 'create']);
 Route::post('/transaksi/proses', [TransaksiController::class, 'store']);
 Route::get('/detail/{no_reg}', [MahasiswaController::class, 'detail'])->name('detail');
+Route::get('/unikom', [MahasiswaController::class, 'getprodi'], function () {
+    return view('landing_page');
+});
+Route::post('/unikom', [MahasiswaController::class, 'store'])->name('mhs.store');
 
 // Route::get('/table', [TableController::class, 'read'], function () {
 //     return view('table');

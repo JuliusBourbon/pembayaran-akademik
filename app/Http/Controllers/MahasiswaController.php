@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
 class MahasiswaController extends Controller
@@ -55,5 +56,59 @@ class MahasiswaController extends Controller
         // }
 
         return view('detail_mahasiswa', ['mahasiswa' => $mahasiswa[0]]);
+    }
+
+    public function getprodi(){
+        $prodi = DB::select("Select * from prodi");
+
+        return view('landing_page', ['prodi' => $prodi]);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_mhs' => 'required',
+            'alamat' => 'required',
+            'telepon' => 'required',
+            'tlp_ortu' => 'required',
+            'alamat' => 'required',
+            'username' => 'required',
+            'password' => 'required',
+            'kode_prodi' => 'required',
+
+        ]);
+
+        $no_reg = 'REG-' . date('Ym') . rand(1000, 9999);
+
+        $password = Hash::make($request->password);
+        $query = "
+            INSERT INTO mahasiswa (
+                no_reg, username, password, nama_mhs, 
+                alamat, telepon, tlp_ortu, kode_prodi, 
+                nim, virtual_account, email_kampus
+            ) VALUES (
+                :no_reg, :username, :password, :nama_mhs, 
+                :alamat, :telepon, :tlp_ortu, :kode_prodi, 
+                NULL, NULL, NULL
+            )
+        ";
+
+        try {
+            DB::insert($query, [
+                'no_reg'     => $no_reg,
+                'username'   => $request->username,
+                'password'   => $password, 
+                'nama_mhs'   => $request->nama_mhs,
+                'alamat'     => $request->alamat,
+                'telepon'    => $request->telepon,
+                'tlp_ortu'   => $request->tlp_ortu,
+                'kode_prodi' => $request->kode_prodi
+            ]);
+
+            return redirect('/unikom')->with('success');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
+        }
     }
 }
