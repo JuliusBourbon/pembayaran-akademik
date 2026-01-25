@@ -203,4 +203,24 @@ class MahasiswaController extends Controller
             return back()->withInput()->with('error', 'Terjadi kesalahan database: ' . $e->getMessage());
         }
     }
+
+    public function delete($no_reg)
+    {
+        try {
+            $deletedRows = DB::delete("DELETE FROM mahasiswa WHERE no_reg = :no_reg", ['no_reg' => $no_reg]);
+            if ($deletedRows === 0) {
+                return back()->with('error', 'Data tidak ditemukan atau sudah terhapus sebelumnya.');
+            }
+            return back()->with('success', 'Data mahasiswa berhasil dihapus permanen.');
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->errorInfo[1] == 1451) {
+                return back()->with('error', 'Gagal menghapus: Mahasiswa ini memiliki riwayat pembayaran. Hapus data transaksi terkait terlebih dahulu.');
+            }
+
+            return back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
+        }
+    }
+
+
 }

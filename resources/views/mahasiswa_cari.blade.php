@@ -86,9 +86,8 @@
                                         @endif
                                     </td>
                                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                        <div class="flex gap-3 items-center">
+                                        <div class="flex gap-1 justify-between items-center">
                                             <a href="{{ url('/detail/' . $mhs->no_reg) }}" class="text-slate-600 hover:text-blue-600">Detail</a>
-                                            
                                             @if($mhs->nim == null)
                                                 <a class="flex gap-2 cursor-pointer items-center text-blue-600 hover:text-blue-900 border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-md transition" href="{{ url('/transaksi/bayar/' . $mhs->no_reg) }}">
                                                     Bayar 
@@ -97,6 +96,11 @@
                                                     </svg>
                                                 </a>
                                             @endif
+                                            <form action="{{ route('deletemhs', $mhs->no_reg) }}" method="POST" onsubmit=" return confirm('Yakin ingin menghapus data {{ $mhs->nama_mhs }}?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <Button class="text-slate-600 hover:text-red-600 cursor-pointer">Hapus</Button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

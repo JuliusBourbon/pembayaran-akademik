@@ -21,9 +21,10 @@ Route::get('/detail/{no_reg}/edit', [MahasiswaController::class, 'updateview'])-
 Route::post('/detail/{no_reg}/edit', [MahasiswaController::class, 'update'])->name('updatemhs.store');
 Route::get('/unikom', [MahasiswaController::class, 'getprodi'], function () {
     return view('landing_page');
-});
+    });
 Route::post('/unikom', [MahasiswaController::class, 'store'])->name('mhs.store');
-
+Route::delete('/detail/{no_reg}/delete', [MahasiswaController::class, 'delete'])->name('deletemhs');
+    
 // Route::get('/table', [TableController::class, 'read'], function () {
 //     return view('table');
 // });
