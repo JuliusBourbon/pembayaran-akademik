@@ -51,10 +51,6 @@ class MahasiswaController extends Controller
             return back()->with('error', 'Data mahasiswa tidak ditemukan.');
         }
 
-        // if ($mahasiswa[0]->nim != null) {
-        //     return back()->with('error', 'Mahasiswa ini sudah lunas dan memiliki NIM.');
-        // }
-
         return view('detail_mahasiswa', ['mahasiswa' => $mahasiswa[0]]);
     }
 
@@ -78,31 +74,35 @@ class MahasiswaController extends Controller
 
         ]);
 
-        $no_reg = 'REG-' . date('Ym') . rand(1000, 9999);
+        // $no_reg = 'REG-' . date('Y') . '-' . rand(1000, 9999);
+        // $virtualacc = "888" . date('md') . rand(10000, 999999);
 
         $password = Hash::make($request->password);
-        $query = "
-            INSERT INTO mahasiswa (
-                no_reg, username, password, nama_mhs, 
-                alamat, telepon, tlp_ortu, kode_prodi, 
-                nim, virtual_account, email_kampus
-            ) VALUES (
-                :no_reg, :username, :password, :nama_mhs, 
-                :alamat, :telepon, :tlp_ortu, :kode_prodi, 
-                NULL, NULL, NULL
-            )
-        ";
-
         try {
-            DB::insert($query, [
-                'no_reg'     => $no_reg,
+            DB::insert("
+                INSERT INTO mahasiswa (
+                    no_reg, username, password, nama_mhs, alamat, telepon, tlp_ortu, kode_prodi, nim, virtual_account, email_kampus
+                ) VALUES (
+                    CONCAT('REG-', YEAR(NOW()), '-', FLOOR(1000 + (RAND() * 9000))), 
+                    :username, 
+                    :password, 
+                    :nama_mhs, 
+                    :alamat, 
+                    :telepon, 
+                    :tlp_ortu, 
+                    :kode_prodi, 
+                    NULL, 
+                    CONCAT('888', DATE_FORMAT(NOW(), '%m%d'), FLOOR(10000 + (RAND() * 900000))), 
+                    NULL
+                )
+            ", [
                 'username'   => $request->username,
                 'password'   => $password, 
                 'nama_mhs'   => $request->nama_mhs,
                 'alamat'     => $request->alamat,
                 'telepon'    => $request->telepon,
                 'tlp_ortu'   => $request->tlp_ortu,
-                'kode_prodi' => $request->kode_prodi
+                'kode_prodi' => $request->kode_prodi,
             ]);
 
             return redirect('/unikom')->with('success');

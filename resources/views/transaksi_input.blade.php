@@ -27,6 +27,11 @@
                                 <p class="text-sm font-medium text-slate-500">No. Registrasi</p>
                                 <p class="mt-1 text-lg font-mono font-semibold text-slate-900">{{ $mhs->no_reg }}</p>
                             </div>
+                            
+                            <div>
+                                <p class="text-sm font-medium text-slate-500">Virtual Account</p>
+                                <p class="mt-1 text-lg font-mono font-semibold text-slate-900">{{ $mhs->virtual_account }}</p>
+                            </div>
 
                             <div>
                                 <p class="text-sm font-medium text-slate-500">Nama Lengkap</p>
