@@ -22,7 +22,7 @@ return new class extends Migration
                 kode_prodi VARCHAR(5),
                 
                 PRIMARY KEY (no_reg),          
-                UNIQUE (nim),                  
+                UNIQUE (nim, virtual_account),                  
                 CONSTRAINT fk_mahasiswa_prodi FOREIGN KEY (kode_prodi) REFERENCES prodi(kode_prodi)
             )
         ");
