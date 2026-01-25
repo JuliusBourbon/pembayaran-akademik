@@ -111,4 +111,96 @@ class MahasiswaController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
         }
     }
+
+    public function updateview($no_reg) {
+        if (!Session::has('is_logged_in')) {
+            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        $mahasiswa = DB::select("
+            SELECT m.*, p.nama_prodi 
+            FROM mahasiswa m 
+            LEFT JOIN prodi p ON m.kode_prodi = p.kode_prodi
+            WHERE m.no_reg = ?
+        ", [$no_reg]);
+
+        if (empty($mahasiswa)) {
+            return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+
+        return view('edit_mahasiswa', ['mhs' => $mahasiswa[0]]);
+    }
+
+    public function update(Request $request, $no_reg)
+    {
+        $request->validate([
+            'username'   => 'required',
+            'nama_mhs'   => 'required',
+            'kode_prodi' => 'required',
+            'alamat'     => 'required',
+            'telepon'    => 'required|numeric',
+            'tlp_ortu'   => 'required|numeric',
+            'password'   => 'nullable|min:6', 
+        ]);
+
+        
+        try {
+            if ($request->filled('password')) {
+                $passwordHash = Hash::make($request->password);
+                DB::update("
+                    UPDATE mahasiswa SET 
+                        username = :username,
+                        password = :password,
+                        nama_mhs = :nama_mhs,
+                        alamat = :alamat,
+                        telepon = :telepon,
+                        tlp_ortu = :tlp_ortu,
+                        kode_prodi = :kode_prodi,
+                        email_kampus = :email_kampus
+                    WHERE no_reg = :no_reg
+                ", [
+                    'username'     => $request->username,
+                    'password'     => $passwordHash,
+                    'nama_mhs'     => $request->nama_mhs,
+                    'alamat'       => $request->alamat,
+                    'telepon'      => $request->telepon,
+                    'tlp_ortu'     => $request->tlp_ortu,
+                    'kode_prodi'   => $request->kode_prodi,
+                    'email_kampus' => $request->email_kampus ?? null,
+                    'no_reg'       => $no_reg
+                ]);
+
+            } else {
+                DB::update("
+                    UPDATE mahasiswa SET 
+                        username = :username,
+                        nama_mhs = :nama_mhs,
+                        alamat = :alamat,
+                        telepon = :telepon,
+                        tlp_ortu = :tlp_ortu,
+                        kode_prodi = :kode_prodi,
+                        email_kampus = :email_kampus
+                    WHERE no_reg = :no_reg
+                ", [
+                    'username'     => $request->username,
+                    'nama_mhs'     => $request->nama_mhs,
+                    'alamat'       => $request->alamat,
+                    'telepon'      => $request->telepon,
+                    'tlp_ortu'     => $request->tlp_ortu,
+                    'kode_prodi'   => $request->kode_prodi,
+                    'email_kampus' => $request->email_kampus ?? null,
+                    'no_reg'       => $no_reg
+                ]);
+            }
+
+            return redirect('/detail/' . $no_reg)->with('success', 'Data mahasiswa berhasil diperbarui.');
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->errorInfo[1] == 1062) {
+                return back()->withInput()->with('error', 'Gagal update: Username tersebut sudah digunakan oleh mahasiswa lain.');
+            }
+
+            return back()->withInput()->with('error', 'Terjadi kesalahan database: ' . $e->getMessage());
+        }
+    }
 }
