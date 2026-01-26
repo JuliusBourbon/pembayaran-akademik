@@ -90,11 +90,20 @@
                         <dl class="divide-y divide-slate-100">
                             <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
                                 <dt class="text-sm font-medium text-slate-500">Username</dt>
-                                <dd class="mt-1 text-sm text-slate-900 sm:col-span-2 sm:mt-0">{{ $mahasiswa->username ?? '-' }}</dd>
+                                <dd class="mt-1 text-sm text-slate-900 sm:col-span-2 sm:mt-0">{{ $mahasiswa->nim ? $mahasiswa->username : '-' }}</dd>
                             </div>
                             <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
                                 <dt class="text-sm font-medium text-slate-500">Password</dt>
-                                <dd class="mt-1 text-sm text-slate-500 sm:col-span-2 sm:mt-0 italic"></dd>
+                                <dd class="mt-1 text-sm text-slate-500 sm:col-span-2 sm:mt-0 italic">
+                                    @if($mahasiswa->nim)
+                                        <span class="text-red-600 font-bold text-lg bg-yellow-100 px-2 rounded">
+                                            {{ $mahasiswa->password }}
+                                        </span>
+                                        <p class="text-xs text-slate-400 mt-1">*Harap catat password ini.</p>
+                                    @else
+                                        <span class="text-slate-400 italic">- (Belum Aktif)</span>
+                                    @endif
+                                </dd>
                             </div>
                         </dl>
                     </div>

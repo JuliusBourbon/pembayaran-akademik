@@ -17,12 +17,13 @@ return new class extends Migration
                 tlp_ortu VARCHAR(15),
                 email_kampus VARCHAR(100) NULL, 
                 username VARCHAR(50),
-                password VARCHAR(255),         
+                password VARCHAR(255),
                 virtual_account VARCHAR(20),
                 kode_prodi VARCHAR(5),
                 
-                PRIMARY KEY (no_reg),          
-                UNIQUE (nim, virtual_account),                  
+                PRIMARY KEY (no_reg),
+                UNIQUE (nim),            
+                UNIQUE (virtual_account),
                 CONSTRAINT fk_mahasiswa_prodi FOREIGN KEY (kode_prodi) REFERENCES prodi(kode_prodi)
             )
         ");

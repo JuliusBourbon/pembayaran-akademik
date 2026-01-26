@@ -34,34 +34,59 @@ class TransaksiController extends Controller
 
     public function store(Request $request)
     {
+        // 1. Validasi Input
         $request->validate([
-            'no_reg'  => 'required',
-            'nominal' => 'required|numeric|min:100000'
+            'no_reg' => 'required',
+            'opsi_kuliah' => 'required|in:lunas,angsur',
+            'angsuran.*' => 'numeric|min:0'
         ]);
 
         $no_reg = $request->input('no_reg');
-        $nominal = $request->input('nominal');
-        
         $petugas = Session::get('username'); 
 
-        try {
+        // 2. Hitung Total Pembayaran
+        // Ambil nilai BPP dan Penunjang
+        $bpp = (int) str_replace('.', '', $request->input('bpp', 0));
+        $penunjang = (int) str_replace('.', '', $request->input('penunjang', 0));
         
+        // Hitung Biaya Kuliah
+        $biaya_kuliah = 0;
+        
+        if ($request->input('opsi_kuliah') == 'lunas') {
+            // ATURAN BARU: Jika Lunas Sekaligus = Rp 8.500.000
+            $biaya_kuliah = 8500000; 
+        } else {
+            // ATURAN BARU: Jika Angsuran = Total Rp 9.000.000 (Dihitung dari input yang dibayar saat ini)
+            if ($request->has('angsuran')) {
+                foreach ($request->angsuran as $jml) {
+                    $biaya_kuliah += (int) str_replace('.', '', $jml);
+                }
+            }
+        }
+
+        // Total Nominal yang akan masuk ke Database
+        $total_nominal = $bpp + $penunjang + $biaya_kuliah;
+
+        if ($total_nominal <= 0) {
+            return back()->with('error', 'Nominal pembayaran tidak boleh 0.');
+        }
+
+        try {
+            // 3. Panggil Stored Procedure
             DB::statement("CALL sp_bayar_registrasi(?, ?, ?)", [
                 $no_reg, 
                 $petugas, 
-                $nominal
+                $total_nominal
             ]);
 
-        
+            // 4. Cek Hasil (Apakah NIM terbentuk?)
             $cek_mhs = DB::select("SELECT nim, nama_mhs FROM mahasiswa WHERE no_reg = ?", [$no_reg]);
             $nim_baru = $cek_mhs[0]->nim;
 
             if ($nim_baru) {
-               
-                $pesan = "TRANSAKSI SUKSES! Mahasiswa a.n {$cek_mhs[0]->nama_mhs} resmi aktif dengan NIM: $nim_baru";
+                $pesan = "TRANSAKSI LUNAS! Mahasiswa a.n {$cek_mhs[0]->nama_mhs} resmi aktif dengan NIM: $nim_baru";
             } else {
-                
-                $pesan = "Pembayaran Angsuran Berhasil disimpan (Status: Belum Lunas/Belum dapat NIM).";
+                $pesan = "Pembayaran Angsuran Berhasil disimpan (Total Bayar: Rp " . number_format($total_nominal, 0, ',', '.') . "). Status: Belum Lunas.";
             }
 
             return redirect('/cari-mahasiswa?q='.$no_reg)->with('success', $pesan);
