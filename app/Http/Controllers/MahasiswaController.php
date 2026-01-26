@@ -71,20 +71,18 @@ class MahasiswaController extends Controller
         ]);
 
         try {
-            $no_reg = 'REG-' . date('Y') . '-' . mt_rand(1000, 9999);
+            // random di query weh meh sesuai materi
+            // $no_reg = 'REG-' . date('Y') . '-' . mt_rand(1000, 9999);
+            // $virtualacc = '888' . date('md') . mt_rand(10000, 999999);
 
-            $username = $no_reg;
- 
             $password = Hash::make('123456');
-
-            $virtualacc = '888' . date('md') . mt_rand(10000, 999999);
 
             DB::insert("
                 INSERT INTO mahasiswa (
                     no_reg, username, password, nama_mhs, alamat, telepon, tlp_ortu, kode_prodi, nim, virtual_account, email_kampus
                 ) VALUES (
-                    :no_reg, 
-                    :username, 
+                    @new_reg := CONCAT('REG-', YEAR(NOW()), '-', FLOOR(1000 + (RAND() * 9000))),
+                    @new_reg,
                     :password, 
                     :nama_mhs, 
                     :alamat, 
@@ -92,21 +90,23 @@ class MahasiswaController extends Controller
                     :tlp_ortu, 
                     :kode_prodi, 
                     NULL, 
-                    :virtual_account, 
+                    CONCAT('888', DATE_FORMAT(NOW(), '%m%d'), FLOOR(10000 + (RAND() * 900000))), 
                     NULL
                 )
             ", [
-                'no_reg'         => $no_reg,
-                'username'       => $username,
+                // 'no_reg'         => $no_reg,
+                // 'username'       => $no_reg,
                 'password'       => $password, 
                 'nama_mhs'       => $request->nama_mhs,
                 'alamat'         => $request->alamat,
                 'telepon'        => $request->telepon,
                 'tlp_ortu'       => $request->tlp_ortu,
                 'kode_prodi'     => $request->kode_prodi,
-                'virtual_account'=> $virtualacc
+                // 'virtual_account'=> $virtualacc
             ]);
-            return redirect('/unikom')->with('success', 'Pendaftaran Berhasil! Username/No.Registrasi Anda adalah: ' . $no_reg);
+
+
+            return redirect('/unikom')->with('success', 'Pendaftaran Berhasil! Username/No.Registrasi Anda adalah: ');
 
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
