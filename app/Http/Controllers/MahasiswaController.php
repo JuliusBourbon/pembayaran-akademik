@@ -63,27 +63,27 @@ class MahasiswaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_mhs' => 'required',
-            'alamat' => 'required',
-            'telepon' => 'required',
-            'tlp_ortu' => 'required',
-            'alamat' => 'required',
-            'username' => 'required',
-            'password' => 'required',
+            'nama_mhs'   => 'required',
+            'alamat'     => 'required',
+            'telepon'    => 'required|numeric',
+            'tlp_ortu'   => 'required|numeric',
             'kode_prodi' => 'required',
-
         ]);
 
-        // $no_reg = 'REG-' . date('Y') . '-' . rand(1000, 9999);
-        // $virtualacc = "888" . date('md') . rand(10000, 999999);
-
-        $password = Hash::make($request->password);
         try {
+            $no_reg = 'REG-' . date('Y') . '-' . mt_rand(1000, 9999);
+
+            $username = $no_reg;
+ 
+            $password = Hash::make('123456');
+
+            $virtualacc = '888' . date('md') . mt_rand(10000, 999999);
+
             DB::insert("
                 INSERT INTO mahasiswa (
                     no_reg, username, password, nama_mhs, alamat, telepon, tlp_ortu, kode_prodi, nim, virtual_account, email_kampus
                 ) VALUES (
-                    CONCAT('REG-', YEAR(NOW()), '-', FLOOR(1000 + (RAND() * 9000))), 
+                    :no_reg, 
                     :username, 
                     :password, 
                     :nama_mhs, 
@@ -92,20 +92,21 @@ class MahasiswaController extends Controller
                     :tlp_ortu, 
                     :kode_prodi, 
                     NULL, 
-                    CONCAT('888', DATE_FORMAT(NOW(), '%m%d'), FLOOR(10000 + (RAND() * 900000))), 
+                    :virtual_account, 
                     NULL
                 )
             ", [
-                'username'   => $request->username,
-                'password'   => $password, 
-                'nama_mhs'   => $request->nama_mhs,
-                'alamat'     => $request->alamat,
-                'telepon'    => $request->telepon,
-                'tlp_ortu'   => $request->tlp_ortu,
-                'kode_prodi' => $request->kode_prodi,
+                'no_reg'         => $no_reg,
+                'username'       => $username,
+                'password'       => $password, 
+                'nama_mhs'       => $request->nama_mhs,
+                'alamat'         => $request->alamat,
+                'telepon'        => $request->telepon,
+                'tlp_ortu'       => $request->tlp_ortu,
+                'kode_prodi'     => $request->kode_prodi,
+                'virtual_account'=> $virtualacc
             ]);
-
-            return redirect('/unikom')->with('success');
+            return redirect('/unikom')->with('success', 'Pendaftaran Berhasil! Username/No.Registrasi Anda adalah: ' . $no_reg);
 
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
@@ -134,61 +135,49 @@ class MahasiswaController extends Controller
     public function update(Request $request, $no_reg)
     {
         $request->validate([
-            'username'   => 'required',
             'nama_mhs'   => 'required',
             'kode_prodi' => 'required',
             'alamat'     => 'required',
             'telepon'    => 'required|numeric',
             'tlp_ortu'   => 'required|numeric',
-            'password'   => 'nullable|min:6', 
         ]);
-
         
         try {
             if ($request->filled('password')) {
                 $passwordHash = Hash::make($request->password);
                 DB::update("
                     UPDATE mahasiswa SET 
-                        username = :username,
                         password = :password,
                         nama_mhs = :nama_mhs,
                         alamat = :alamat,
                         telepon = :telepon,
                         tlp_ortu = :tlp_ortu,
-                        kode_prodi = :kode_prodi,
-                        email_kampus = :email_kampus
+                        kode_prodi = :kode_prodi
                     WHERE no_reg = :no_reg
                 ", [
-                    'username'     => $request->username,
                     'password'     => $passwordHash,
                     'nama_mhs'     => $request->nama_mhs,
                     'alamat'       => $request->alamat,
                     'telepon'      => $request->telepon,
                     'tlp_ortu'     => $request->tlp_ortu,
                     'kode_prodi'   => $request->kode_prodi,
-                    'email_kampus' => $request->email_kampus ?? null,
                     'no_reg'       => $no_reg
                 ]);
-
             } else {
                 DB::update("
                     UPDATE mahasiswa SET 
-                        username = :username,
                         nama_mhs = :nama_mhs,
                         alamat = :alamat,
                         telepon = :telepon,
                         tlp_ortu = :tlp_ortu,
-                        kode_prodi = :kode_prodi,
-                        email_kampus = :email_kampus
+                        kode_prodi = :kode_prodi
                     WHERE no_reg = :no_reg
                 ", [
-                    'username'     => $request->username,
                     'nama_mhs'     => $request->nama_mhs,
                     'alamat'       => $request->alamat,
                     'telepon'      => $request->telepon,
                     'tlp_ortu'     => $request->tlp_ortu,
                     'kode_prodi'   => $request->kode_prodi,
-                    'email_kampus' => $request->email_kampus ?? null,
                     'no_reg'       => $no_reg
                 ]);
             }
@@ -196,10 +185,6 @@ class MahasiswaController extends Controller
             return redirect('/detail/' . $no_reg)->with('success', 'Data mahasiswa berhasil diperbarui.');
 
         } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->errorInfo[1] == 1062) {
-                return back()->withInput()->with('error', 'Gagal update: Username tersebut sudah digunakan oleh mahasiswa lain.');
-            }
-
             return back()->withInput()->with('error', 'Terjadi kesalahan database: ' . $e->getMessage());
         }
     }
@@ -217,10 +202,7 @@ class MahasiswaController extends Controller
             if ($e->errorInfo[1] == 1451) {
                 return back()->with('error', 'Gagal menghapus: Mahasiswa ini memiliki riwayat pembayaran. Hapus data transaksi terkait terlebih dahulu.');
             }
-
             return back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }
     }
-
-
 }

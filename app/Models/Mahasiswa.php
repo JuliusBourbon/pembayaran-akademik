@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Mahasiswa extends Model
 {
     protected $table = 'mahasiswa';
-    protected $primaryKey = 'nim';
+    
+    protected $primaryKey = 'no_reg';
+    
     public $incrementing = false;
     protected $keyType = 'string';
     public $timestamps = false;
@@ -20,6 +22,6 @@ class Mahasiswa extends Model
 
     public function transaksi()
     {
-        return $this->hasMany(Transaksi::class, 'nim', 'nim');
+        return $this->hasMany(Transaksi::class, 'no_reg', 'no_reg');
     }
 }
