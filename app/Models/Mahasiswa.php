@@ -7,21 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class Mahasiswa extends Model
 {
     protected $table = 'mahasiswa';
-    
-    protected $primaryKey = 'no_reg';
-    
+    protected $primaryKey = 'no_reg'; 
     public $incrementing = false;
     protected $keyType = 'string';
     public $timestamps = false;
     protected $guarded = [];
 
-    public function prodi()
-    {
-        return $this->belongsTo(Prodi::class, 'kode_prodi', 'kode_prodi');
-    }
-
     public function transaksi()
     {
         return $this->hasMany(Transaksi::class, 'no_reg', 'no_reg');
+    }
+    
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class, 'kode_prodi', 'kode_prodi');
     }
 }

@@ -12,19 +12,18 @@ class Transaksi extends Model
     protected $keyType = 'string';
     public $timestamps = false;
     protected $guarded = [];
+    public function details()
+    {
+        return $this->hasMany(TransaksiDetail::class, 'no_transaksi', 'no_transaksi');
+    }
 
     public function mahasiswa()
     {
-        return $this->belongsTo(Mahasiswa::class, 'nim', 'nim');
+        return $this->belongsTo(Mahasiswa::class, 'no_reg', 'no_reg');
     }
 
     public function petugas()
     {
-        return $this->belongsTo(Petugas::class, 'id_petugas', 'id_petugas');
-    }
-
-    public function detail()
-    {
-        return $this->hasMany(TransaksiDetail::class, 'no_transaksi', 'no_transaksi');
+        return $this->belongsTo(User::class, 'id_petugas', 'username');
     }
 }

@@ -19,6 +19,7 @@ Route::post('/transaksi/proses', [TransaksiController::class, 'store']);
 Route::get('/detail/{no_reg}', [MahasiswaController::class, 'detail'])->name('detail');
 Route::get('/detail/{no_reg}/edit', [MahasiswaController::class, 'updateview'])->name('updatemhs');
 Route::post('/detail/{no_reg}/edit', [MahasiswaController::class, 'update'])->name('updatemhs.store');
+Route::get('/transaksi/cetak/{no_transaksi}', [TransaksiController::class, 'cetak']);
 Route::get('/unikom', [MahasiswaController::class, 'getprodi'], function () {
     return view('landing_page');
     });

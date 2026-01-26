@@ -95,4 +95,22 @@ class TransaksiController extends Controller
             return back()->with('error', 'Gagal memproses transaksi: ' . $e->getMessage());
         }
     }
+
+    public function cetak($no_transaksi)
+    {
+        if (!Session::has('is_logged_in')) {
+            return redirect('/login');
+        }
+
+    
+        $transaksi = \App\Models\Transaksi::with(['details', 'mahasiswa', 'petugas'])
+            ->where('no_transaksi', $no_transaksi)
+            ->first();
+
+        if (!$transaksi) {
+            return back()->with('error', 'Data transaksi tidak ditemukan.');
+        }
+
+        return view('struk_pembayaran', ['trx' => $transaksi]);
+    }
 }

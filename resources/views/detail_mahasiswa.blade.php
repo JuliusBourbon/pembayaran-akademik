@@ -154,8 +154,56 @@
                     </dl>
                 </div>
             </div>
-
         </div>
+
+        <div class="col-span-1 lg:col-span-2">
+                <div class="bg-white shadow-sm ring-1 ring-slate-900/5 sm:rounded-xl overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 border-b border-slate-100 flex justify-between items-center">
+                        <h3 class="text-base font-semibold leading-6 text-slate-900 flex items-center">
+                            <svg class="h-5 w-5 text-slate-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Riwayat Pembayaran
+                        </h3>
+                    </div>
+                    <div class="px-4 py-4 sm:p-6">
+                        @php
+                            // Ambil data transaksi langsung di view (cara cepat)
+                            // Idealnya dipassing dari Controller, tapi agar tidak ubah controller detail, kita pakai ini dulu
+                            $riwayat = \App\Models\Transaksi::where('no_reg', $mahasiswa->no_reg)->orderBy('tgl_bayar', 'desc')->get();
+                        @endphp
+
+                        @if($riwayat->isEmpty())
+                            <p class="text-sm text-slate-500 italic text-center py-4">Belum ada riwayat transaksi.</p>
+                        @else
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-slate-200">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-3 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">No. Transaksi</th>
+                                            <th class="px-3 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Tanggal</th>
+                                            <th class="px-3 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Nominal</th>
+                                            <th class="px-3 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-slate-200">
+                                        @foreach($riwayat as $trx)
+                                        <tr>
+                                            <td class="px-3 py-4 whitespace-nowrap text-sm font-mono text-slate-900">{{ $trx->no_transaksi }}</td>
+                                            <td class="px-3 py-4 whitespace-nowrap text-sm text-slate-500">{{ date('d/m/Y H:i', strtotime($trx->tgl_bayar)) }}</td>
+                                            <td class="px-3 py-4 whitespace-nowrap text-sm font-bold text-blue-600">Rp {{ number_format($trx->total_bayar, 0, ',', '.') }}</td>
+                                            <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <a href="{{ url('/transaksi/cetak/' . $trx->no_transaksi) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1 rounded-md border border-indigo-200">
+                                                    Cetak Struk
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
 
         <div class="mt-8 flex items-center justify-end gap-x-4">
             <button type="button" onclick="history.back()" class="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
