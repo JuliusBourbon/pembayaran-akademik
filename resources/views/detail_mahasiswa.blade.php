@@ -17,7 +17,7 @@
         <div class="bg-white shadow-sm ring-1 ring-slate-900/5 sm:rounded-xl mb-6 overflow-hidden">
             <div class="px-4 py-6 sm:px-8 sm:py-8 bg-linear-to-r from-blue-600 to-blue-800 text-white flex flex-col sm:flex-row items-center sm:items-start gap-6">
                 <div class="h-24 w-24 rounded-full bg-white/20 flex items-center justify-center text-3xl font-bold border-4 border-white/30 shadow-inner">
-                    {{ substr($mahasiswa->nama_mhs, 0, 1) }}
+                     {{ substr($mahasiswa->nama_mhs, 0, 1) }}
                 </div>
                 
                 <div class="text-center sm:text-left flex-1">
@@ -154,9 +154,7 @@
                     </dl>
                 </div>
             </div>
-        </div>
-
-        <div class="col-span-1 lg:col-span-2">
+            <div class="col-span-1 lg:col-span-2 ">
                 <div class="bg-white shadow-sm ring-1 ring-slate-900/5 sm:rounded-xl overflow-hidden">
                     <div class="px-4 py-5 sm:px-6 border-b border-slate-100 flex justify-between items-center">
                         <h3 class="text-base font-semibold leading-6 text-slate-900 flex items-center">
@@ -170,7 +168,7 @@
                             // Idealnya dipassing dari Controller, tapi agar tidak ubah controller detail, kita pakai ini dulu
                             $riwayat = \App\Models\Transaksi::where('no_reg', $mahasiswa->no_reg)->orderBy('tgl_bayar', 'desc')->get();
                         @endphp
-
+    
                         @if($riwayat->isEmpty())
                             <p class="text-sm text-slate-500 italic text-center py-4">Belum ada riwayat transaksi.</p>
                         @else
@@ -191,7 +189,7 @@
                                             <td class="px-3 py-4 whitespace-nowrap text-sm text-slate-500">{{ date('d/m/Y H:i', strtotime($trx->tgl_bayar)) }}</td>
                                             <td class="px-3 py-4 whitespace-nowrap text-sm font-bold text-blue-600">Rp {{ number_format($trx->total_bayar, 0, ',', '.') }}</td>
                                             <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <a href="{{ url('/transaksi/cetak/' . $trx->no_transaksi) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1 rounded-md border border-indigo-200">
+                                                <a href="{{ url('/transaksi/cetak/' . $trx->no_transaksi) }}" target="_blank" class="text-blue-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1 rounded-md border border-blue-200">
                                                     Cetak Struk
                                                 </a>
                                             </td>
@@ -204,6 +202,8 @@
                     </div>
                 </div>
             </div>
+        </div>
+
 
         <div class="mt-8 flex items-center justify-end gap-x-4">
             <button type="button" onclick="history.back()" class="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">

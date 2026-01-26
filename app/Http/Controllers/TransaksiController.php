@@ -102,6 +102,12 @@ class TransaksiController extends Controller
             return redirect('/login');
         }
 
+        // $mahasiswa = DB::select("
+        //     SELECT m.*, p.nama_prodi 
+        //     FROM mahasiswa m 
+        //     LEFT JOIN prodi p ON m.kode_prodi = p.kode_prodi
+        //     WHERE m.no_reg = ?
+        // ", [$no_reg]);
     
         $transaksi = \App\Models\Transaksi::with(['details', 'mahasiswa', 'petugas'])
             ->where('no_transaksi', $no_transaksi)
