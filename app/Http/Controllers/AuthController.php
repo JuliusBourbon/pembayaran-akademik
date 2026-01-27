@@ -58,4 +58,51 @@ class AuthController extends Controller
         Session::flush();
         return redirect('/login')->with('success', 'Berhasil Logout.');
     }
+
+    public function loginMahasiswaForm()
+    {
+        return view('login_mahasiswa');
+    }
+
+    public function loginMahasiswa(Request $request)
+    {
+        $request->validate([
+            'no_reg' => 'required',
+            'password' => 'required'
+        ]);
+
+        $mhs = \App\Models\Mahasiswa::where('no_reg', $request->no_reg)->first();
+
+        if (!$mhs) {
+            return back()->with('error', 'No Registrasi tidak ditemukan.');
+        }
+
+        $loginSuccess = false;
+        if ($mhs->nim != null) {
+            if ($mhs->password === $request->password) {
+                $loginSuccess = true;
+            }
+        } 
+        else {
+            if ($request->password === $mhs->no_reg) {
+                $loginSuccess = true;
+            }
+        }
+        
+        if ($loginSuccess) {
+            Session::put('mhs_logged_in', true);
+            Session::put('mhs_no_reg', $mhs->no_reg);
+            Session::put('mhs_nama', $mhs->nama_mhs);
+            
+            return redirect('/mahasiswa/dashboard');
+        }
+
+        return back()->with('error', 'Password salah. Gunakan No. Registrasi sebagai password jika belum lunas.');
+    }
+
+    public function logoutMahasiswa()
+    {
+        Session::forget(['mhs_logged_in', 'mhs_no_reg', 'mhs_nama']);
+        return redirect('/mahasiswa/login');
+    }
 }

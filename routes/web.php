@@ -25,6 +25,16 @@ Route::get('/unikom', [MahasiswaController::class, 'getprodi'], function () {
     });
 Route::post('/unikom', [MahasiswaController::class, 'store'])->name('mhs.store');
 Route::delete('/detail/{no_reg}/delete', [MahasiswaController::class, 'delete'])->name('deletemhs');
+
+Route::get('/mahasiswa/login', [AuthController::class, 'loginMahasiswaForm']);
+Route::post('/mahasiswa/login', [AuthController::class, 'loginMahasiswa']);
+Route::get('/mahasiswa/logout', [AuthController::class, 'logoutMahasiswa']);
+Route::get('/mahasiswa/dashboard', function () {
+    if (!Session::has('mhs_logged_in')) {
+        return redirect('/mahasiswa/login')->with('error', 'Silakan login terlebih dahulu.');
+    }
+    return view('mahasiswa.dashboard');
+});
     
 // Route::get('/table', [TableController::class, 'read'], function () {
 //     return view('table');

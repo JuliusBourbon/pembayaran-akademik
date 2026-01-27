@@ -78,25 +78,25 @@ class MahasiswaController extends Controller
             $password = Hash::make('123456');
 
             DB::insert("
-                INSERT INTO mahasiswa (
-                    no_reg, username, password, nama_mhs, alamat, telepon, tlp_ortu, kode_prodi, nim, virtual_account, email_kampus
-                ) VALUES (
-                    @new_reg := CONCAT('REG-', YEAR(NOW()), '-', FLOOR(1000 + (RAND() * 9000))),
-                    @new_reg,
-                    :password, 
-                    :nama_mhs, 
-                    :alamat, 
-                    :telepon, 
-                    :tlp_ortu, 
-                    :kode_prodi, 
-                    NULL, 
-                    CONCAT('888', DATE_FORMAT(NOW(), '%m%d'), FLOOR(10000 + (RAND() * 900000))), 
-                    NULL
-                )
-            ", [
+                    INSERT INTO mahasiswa (
+                        no_reg, username, password, nama_mhs, alamat, telepon, tlp_ortu, kode_prodi, nim, virtual_account, email_kampus
+                    ) VALUES (
+                        :no_reg, 
+                        :username, 
+                        :password,  -- Password awal
+                        :nama_mhs, 
+                        :alamat, 
+                        :telepon, 
+                        :tlp_ortu, 
+                        :kode_prodi, 
+                        NULL, 
+                        :virtual_account, 
+                        NULL
+                    )
+                ", [
                 // 'no_reg'         => $no_reg,
                 // 'username'       => $no_reg,
-                'password'       => $password, 
+                'password'       => $no_reg,
                 'nama_mhs'       => $request->nama_mhs,
                 'alamat'         => $request->alamat,
                 'telepon'        => $request->telepon,

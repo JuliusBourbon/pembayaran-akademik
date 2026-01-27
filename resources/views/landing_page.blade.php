@@ -15,8 +15,8 @@
                 </a>
             </div>
             <div class="flex flex-1 justify-end">
-                <a href="{{ route('login') }}" class="text-sm font-semibold leading-6 text-slate-900 hover:text-blue-600">
-                    Log in Petugas <span>&rarr;</span>
+                <a href="{{ url('/mahasiswa/login') }}" class="text-sm font-semibold leading-6 text-slate-900 hover:text-blue-600">
+                    Login <span>&rarr;</span>
                 </a>
             </div>
         </nav>
