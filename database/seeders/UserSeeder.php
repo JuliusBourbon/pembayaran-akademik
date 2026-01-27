@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::insert('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', [
+        DB::insert('INSERT INTO petugas (username, password, role) VALUES (?, ?, ?)', [
             'admin', 
             Hash::make('password123'),
             'administrator'

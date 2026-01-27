@@ -12,11 +12,11 @@ return new class extends Migration
                 no_transaksi VARCHAR(20) NOT NULL,
                 tgl_bayar DATETIME,
                 no_reg VARCHAR(20) NOT NULL,
-                id_petugas VARCHAR(255),
+                id_petugas BIGINT UNSIGNED,
                 total_bayar INT,
                 PRIMARY KEY (no_transaksi),
                 CONSTRAINT fk_trx_mahasiswa FOREIGN KEY (no_reg) REFERENCES mahasiswa(no_reg),
-                CONSTRAINT fk_trx_users FOREIGN KEY (id_petugas) REFERENCES users(username)
+                CONSTRAINT fk_trx_users FOREIGN KEY (id_petugas) REFERENCES petugas(id)
             )
         ");
 

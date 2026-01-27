@@ -88,7 +88,7 @@ class TransaksiController extends Controller
         ]);
 
         $no_reg = $request->input('no_reg');
-        $petugas = Session::get('username');
+        $petugas = Session::get('id_user');
         $items_dibayar = $request->input('detail_bayar'); 
 
         $total_transaksi = 0;
@@ -112,7 +112,8 @@ class TransaksiController extends Controller
 
         DB::beginTransaction();
         try {
-          
+            $id_petugas = Session::get('id_user');
+
             DB::table('transaksi')->insert([
                 'no_transaksi' => $no_transaksi,
                 'tgl_bayar'    => now(),
@@ -180,20 +181,36 @@ class TransaksiController extends Controller
         }
     }
 
-    public function cetak($no_transaksi)
-    {
+    public function cetak($no_transaksi) {
         if (!Session::has('is_logged_in')) {
             return redirect('/login');
         }
+        $dataUtama = DB::select("
+            SELECT 
+                t.no_transaksi, 
+                t.tgl_bayar, 
+                t.total_bayar, 
+                t.no_reg,
+                m.*,
+                p.username as nama_petugas,
+                pr.nama_prodi
+                
+            FROM transaksi t
+            JOIN mahasiswa m ON t.no_reg = m.no_reg
+            LEFT JOIN petugas p ON t.id_petugas = p.id
+            LEFT JOIN prodi pr ON m.kode_prodi = pr.kode_prodi
+            WHERE t.no_transaksi = :no_transaksi
+            LIMIT 1
+        ", ['no_transaksi' => $no_transaksi]);
 
-        $transaksi = \App\Models\Transaksi::with(['details', 'mahasiswa', 'petugas'])
-            ->where('no_transaksi', $no_transaksi)
-            ->first();
+        $trx = $dataUtama[0];
 
-        if (!$transaksi) {
-            return back()->with('error', 'Data transaksi tidak ditemukan.');
-        }
+        $trx->details = DB::select("
+            SELECT jenis_biaya, nominal 
+            FROM transaksi_detail 
+            WHERE no_transaksi = :no_transaksi
+        ", ['no_transaksi' => $no_transaksi]);
 
-        return view('struk_pembayaran', ['trx' => $transaksi]);
+        return view('struk_pembayaran', ['trx' => $trx]);
     }
 }

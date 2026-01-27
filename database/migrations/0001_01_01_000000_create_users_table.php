@@ -13,8 +13,8 @@ return new class extends Migration
     public function up(): void
     {
         DB::statement("
-            CREATE TABLE users (
-                id_user BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            CREATE TABLE petugas (
+                id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 username VARCHAR(255) NOT NULL UNIQUE,
                 password VARCHAR(255) NOT NULL,
                 role VARCHAR(50) NOT NULL,
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('petugas');
     }
 };

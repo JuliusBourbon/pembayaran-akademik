@@ -48,7 +48,7 @@
                 </div>
                 <div class="flex">
                     <span class="w-16 shrink-0 text-slate-500">Nama</span>
-                    <span>: {{ $trx->mahasiswa->nama_mhs }}</span>
+                    <span>: {{ $trx->nama_mhs }}</span>
                 </div>
                 <div class="flex">
                     <span class="w-16 shrink-0 text-slate-500">No. Reg</span>
@@ -56,35 +56,35 @@
                 </div>
                 <div class="flex">
                     <span class="w-16 shrink-0 text-slate-500">NIM</span>
-                    <span>: {{ $trx->mahasiswa->nim }}</span>
+                    <span>: {{ $trx->nim }}</span>
                 </div>
                 <div class="flex">
                     <span class="w-16 shrink-0 text-slate-500">Alamat</span>
-                    <span>: {{ $trx->mahasiswa->alamat }}</span>
+                    <span>: {{ $trx->alamat }}</span>
                 </div>
                 <div class="flex">
                     <span class="w-16 shrink-0 text-slate-500">Telepon / HP</span>
-                    <span>: {{ $trx->mahasiswa->telepon }}</span>
+                    <span>: {{ $trx->telepon }}</span>
                 </div>
                 <div class="flex">
                     <span class="w-16 shrink-0 text-slate-500">HP Orang Tua</span>
-                    <span>: {{ $trx->mahasiswa->tlp_ortu }}</span>
+                    <span>: {{ $trx->tlp_ortu }}</span>
                 </div>
                 <div class="flex">
                     <span class="w-16 shrink-0 text-slate-500">Program Studi</span>
-                    <span>: {{ $trx->mahasiswa->prodi->nama_prodi }}</span>
+                    <span>: {{ $trx->nama_prodi }}</span>
                 </div>
                 <div class="flex">
                     <span class="w-16 shrink-0 text-slate-500">User</span>
-                    <span>: {{ $trx->mahasiswa->username }}</span>
+                    <span>: {{ $trx->username }}</span>
                 </div>
                 <div class="flex">
                     <span class="w-16 shrink-0 text-slate-500">Password</span>
-                    <span>: {{ $trx->mahasiswa->password }}</span>
+                    <span>: {{ $trx->password }}</span>
                 </div>
                 <div class="flex">
                     <span class="w-16 shrink-0 text-slate-500">Email</span>
-                    <span class="break-all">: {{ $trx->mahasiswa->email_kampus }}</span>
+                    <span class="break-all">: {{ $trx->email_kampus }}</span>
                 </div>
                 <div class="flex">
                     <span class="w-16 shrink-0 text-slate-500">Tanggal</span>
@@ -95,13 +95,18 @@
                 <div class="w-full flex justify-center font-bold">
                     <h1>BIAYA</h1>
                 </div>
-                <div class="flex">
-                    <span class="w-16 shrink-0 text-slate-500">1. BPP</span>
-                    <span class="">:</span>
-                </div>
-                <div class="flex">
-                    <span class="w-16 shrink-0 text-slate-500">2. Biaya Kuliah</span>
-                    <span>:</span>
+                <div class="flex h-full flex-col p-3">
+                    <div class="h-[90%]">
+                        <div>
+                            <span class="text-base">
+                                @foreach($trx->details as $item)
+                                    <p class="py-5">
+                                        {{ $item->jenis_biaya }} <br>
+                                    </p>
+                                @endforeach
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="text-xs space-y-1 p-3">
@@ -111,20 +116,19 @@
                 <div class="flex h-full flex-col p-3">
                     <div class="h-[90%]">
                         <div>
-                            <span class="text-base">
-                            Rp {{ number_format($trx->total_bayar, 0, ',', '.') }}
-                            </span>
-                        </div>
-                        <div>
-                            <span class="text-base">
-                            Rp {{ number_format($trx->total_bayar, 0, ',', '.') }}
-                            </span>
+                            <div class="text-base flex flex-col gap-2">
+                                @foreach($trx->details as $item)
+                                    <p class="py-5">
+                                        {{ number_format($item->nominal, 0, ',', '.') }} <br>
+                                    </p>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                     <div class=" border-t">
-                        <span class="text-base">
+                        <div class="text-base flex flex-col gap-2">
                             Rp {{ number_format($trx->total_bayar, 0, ',', '.') }}
-                        </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -132,16 +136,16 @@
 
         <div class="flex justify-between mt-8 mb-4 text-[10px] uppercase">
             <div class="text-center w-[45%]">
-                <p class="text-slate-500 mb-8">Calon Mahasiswa</p>
+                <p class="text-slate-500 mb-8">{{ $trx->nama_mhs }}</p>
                 <div class="border-b border-slate-800 border-dotted pb-1 py-20">
                     <span class="font-bold text-slate-900 block truncate">
-                        {{-- {{ $trx->mahasiswa->nama_mhs }} --}}
+                        {{-- {{ $trx->nama_mhs }} --}}
                     </span>
                 </div>
             </div>
 
             <div class="text-center w-[45%]">
-                <p class="text-slate-500 mb-8">Petugas</p>
+                <p class="text-slate-500 mb-8">{{ $trx->nama_petugas }}</p>
                 <div class="border-b border-slate-800 border-dotted pb-1 py-20">
                     <span class="font-bold text-slate-900 block truncate">
                     </span>

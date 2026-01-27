@@ -80,7 +80,7 @@ class MahasiswaController extends Controller
                         @no_reg := CONCAT('REG-', YEAR(NOW()), '-', FLOOR(1000 + (RAND() * 9000))),
                         @no_reg,
                         @no_reg,
-                        :nama_mhs, 
+                        Upper(:nama_mhs), 
                         :alamat, 
                         :telepon, 
                         :tlp_ortu, 

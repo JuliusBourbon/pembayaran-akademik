@@ -27,13 +27,13 @@ class AuthController extends Controller
         $username = $request->input('username');
         $password = $request->input('password');
 
-        $users = DB::select('SELECT * FROM users WHERE username = ? LIMIT 1', [$username]);
+        $users = DB::select('SELECT * FROM petugas WHERE username = ? LIMIT 1', [$username]);
 
         if (count($users) > 0) {
             $user = $users[0];
 
             if (Hash::check($password, $user->password)) {
-                Session::put('id_user', $user->id_user);
+                Session::put('id_user', $user->id);
                 Session::put('username', $user->username);
                 Session::put('role', $user->role);
                 Session::put('is_logged_in', true);
