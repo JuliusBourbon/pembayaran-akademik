@@ -71,39 +71,33 @@ class MahasiswaController extends Controller
         ]);
 
         try {
-            // random di query weh meh sesuai materi
-            // $no_reg = 'REG-' . date('Y') . '-' . mt_rand(1000, 9999);
-            // $virtualacc = '888' . date('md') . mt_rand(10000, 999999);
-
-            $password = Hash::make('123456');
-
+            // no_reg sama VA di generate
+            // username sama password ambil dari variabel @no_reg
             DB::insert("
                     INSERT INTO mahasiswa (
                         no_reg, username, password, nama_mhs, alamat, telepon, tlp_ortu, kode_prodi, nim, virtual_account, email_kampus
                     ) VALUES (
-                        :no_reg, 
-                        :username, 
-                        :password,  -- Password awal
+                        @no_reg := CONCAT('REG-', YEAR(NOW()), '-', FLOOR(1000 + (RAND() * 9000))),
+                        @no_reg,
+                        @no_reg,
                         :nama_mhs, 
                         :alamat, 
                         :telepon, 
                         :tlp_ortu, 
                         :kode_prodi, 
                         NULL, 
-                        :virtual_account, 
+                        CONCAT('888', DATE_FORMAT(NOW(), '%m%d'), FLOOR(10000 + (RAND() * 900000))), 
                         NULL
                     )
                 ", [
-                // 'no_reg'         => $no_reg,
-                // 'username'       => $no_reg,
-                'password'       => $no_reg,
                 'nama_mhs'       => $request->nama_mhs,
                 'alamat'         => $request->alamat,
                 'telepon'        => $request->telepon,
                 'tlp_ortu'       => $request->tlp_ortu,
                 'kode_prodi'     => $request->kode_prodi,
-                // 'virtual_account'=> $virtualacc
             ]);
+
+            // dd($request);
 
 
             return redirect('/unikom')->with('success', 'Pendaftaran Berhasil! Username/No.Registrasi Anda adalah: ');

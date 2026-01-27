@@ -11,7 +11,7 @@
     <main class="max-w-7xl mx-auto py-10 px-6 lg:px-8 mt-16">
         
         <div class="bg-white shadow-sm ring-1 ring-slate-900/5 sm:rounded-xl mb-6 overflow-hidden">
-            <div class="px-4 py-6 sm:px-8 sm:py-8 bg-gradient-to-r from-blue-600 to-blue-800 text-white flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            <div class="px-4 py-6 sm:px-8 sm:py-8 bg-linear-to-r from-blue-600 to-blue-800 text-white flex flex-col sm:flex-row items-center sm:items-start gap-6">
                 <div class="h-24 w-24 rounded-full bg-white/20 flex items-center justify-center text-3xl font-bold border-4 border-white/30 shadow-inner">
                      {{ substr($mahasiswa->nama_mhs, 0, 1) }}
                 </div>
@@ -93,7 +93,7 @@
                             </div>
                             <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
                                 <dt class="text-sm font-medium text-slate-500">Program Studi</dt>
-                                <dd class="mt-1 text-sm text-slate-900 sm:col-span-2 sm:mt-0">{{ $mahasiswa->kode_prodi }}</dd>
+                                <dd class="mt-1 text-sm text-slate-900 sm:col-span-2 sm:mt-0">{{ $mahasiswa->nama_prodi }}</dd>
                             </div>
                             <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
                                 <dt class="text-sm font-medium text-slate-500">Virtual Account</dt>
@@ -114,7 +114,7 @@
                         <dl class="divide-y divide-slate-100">
                             <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
                                 <dt class="text-sm font-medium text-slate-500">Username</dt>
-                                <dd class="mt-1 text-sm text-slate-900 sm:col-span-2 sm:mt-0 font-mono">{{ $mahasiswa->nim ? $mahasiswa->username : '-' }}</dd>
+                                <dd class="mt-1 text-sm text-slate-900 sm:col-span-2 sm:mt-0 font-mono">{{ $mahasiswa->username ?? '-' }}</dd>
                             </div>
                             <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
                                 <dt class="text-sm font-medium text-slate-500">Password</dt>
@@ -123,7 +123,9 @@
                                         <span class="text-red-600 font-bold text-lg bg-yellow-100 px-2 rounded font-mono">{{ $mahasiswa->password }}</span>
                                         <p class="text-xs text-slate-400 mt-1">*Harap catat password ini.</p>
                                     @else
-                                        <span class="text-slate-400 italic">- (Belum Aktif)</span>
+                                        <span class="text-red-600 font-bold rounded">{{ $mahasiswa->password }}</span>
+                                        <p class="text-xs text-slate-400 mt-1">Calon mahasiswa belum melakukan pembayaran.</p>
+                                        <p class="text-xs text-slate-400 mt-1">Gunakan password ini untuk login ke dashboard mahasiswa.</p>
                                     @endif
                                 </dd>
                             </div>
