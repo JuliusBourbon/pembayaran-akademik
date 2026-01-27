@@ -30,9 +30,16 @@
                             <p class="text-sm font-medium text-slate-500">Nama Lengkap</p>
                             <p class="text-base font-semibold text-slate-900">{{ $mhs->nama_mhs }}</p>
                         </div>
-                        <div>
-                            <p class="text-sm font-medium text-slate-500">Program Studi</p>
-                            <p class="text-base text-slate-700">{{ $mhs->nama_prodi ?? $mhs->kode_prodi }}</p>
+                        <div class="mt-4 pt-4 border-t border-dashed border-slate-200">
+                            <p class="text-sm font-medium text-slate-500">Status Pembayaran:</p>
+                            @if($is_new_student)
+                                <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Pembayaran Awal</span>
+                            @else
+                                <span class="inline-flex items-center rounded-md bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10">Pembayaran Lanjutan</span>
+                                @if($plan_angsuran)
+                                    <span class="block mt-1 text-xs text-slate-500">Paket Angsuran: {{ $plan_angsuran }}x</span>
+                                @endif
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -47,21 +54,29 @@
                         
                         <div>
                             <h4 class="text-sm font-bold text-blue-600 uppercase tracking-wide mb-4">1. Komponen Dasar</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-900 mb-2">BPP (Biaya Pengembangan)</label>
-                                    <div class="relative rounded-md shadow-sm">
-                                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"><span class="text-slate-500 sm:text-sm">Rp</span></div>
-                                        <input type="number" name="bpp" id="input_bpp" value="8500000" class="block w-full rounded-md border-0 py-2 pl-10 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm font-mono" oninput="hitungTotal()">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-900 mb-2">Biaya Penunjang</label>
-                                    <div class="relative rounded-md shadow-sm">
-                                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"><span class="text-slate-500 sm:text-sm">Rp</span></div>
-                                        <input type="number" name="penunjang" id="input_penunjang" value="2500000" class="block w-full rounded-md border-0 py-2 pl-10 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm font-mono" oninput="hitungTotal()">
-                                    </div>
-                                </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                @foreach($biaya as $b)
+                                    @if($b->id_jenis_biaya != 'KUL') 
+                                        @php $is_lunas = $status_bayar[$b->id_jenis_biaya] ?? false; @endphp
+                                        <div class="relative flex items-center p-4 border rounded-lg {{ $is_lunas ? 'bg-green-50 border-green-200' : 'hover:bg-slate-50 border-slate-200' }}">
+                                            @if($is_lunas)
+                                                <div class="flex h-6 items-center"><svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                                                <div class="ml-3 text-sm leading-6">
+                                                    <label class="font-bold text-green-800">{{ $b->nama_biaya }}</label>
+                                                    <p class="text-green-600 text-xs font-semibold">SUDAH LUNAS</p>
+                                                </div>
+                                            @else
+                                                <div class="flex h-6 items-center">
+                                                    <input id="biaya_{{ $b->id_jenis_biaya }}" name="detail_bayar[]" value="{{ $b->nama_biaya }}|{{ $b->nominal }}" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-blue-600" onchange="hitungTotal()" {{ $is_new_student ? 'checked onclick="return false;"' : '' }}>
+                                                </div>
+                                                <div class="ml-3 text-sm leading-6">
+                                                    <label for="biaya_{{ $b->id_jenis_biaya }}" class="font-medium text-slate-900">{{ $b->nama_biaya }} @if($is_new_student) <span class="text-red-500 text-xs font-bold">(Wajib)</span> @endif</label>
+                                                    <p class="text-slate-500 font-mono">Rp {{ number_format($b->nominal, 0, ',', '.') }}</p>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+                                @endforeach
                             </div>
                         </div>
 
@@ -70,55 +85,65 @@
                         <div>
                             <h4 class="text-sm font-bold text-blue-600 uppercase tracking-wide mb-4">2. Biaya Kuliah</h4>
                             
-                            <div class="space-y-4">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div class="relative flex items-start p-4 border rounded-lg hover:bg-slate-50 cursor-pointer" onclick="document.getElementById('radio_lunas').click()">
-                                        <div class="min-w-0 flex-1 text-sm">
-                                            <label for="radio_lunas" class="font-medium text-slate-900">Langsung Lunas</label>
-                                            <p class="text-slate-500">Bayar Sekaligus <br><strong class="text-green-600">Rp 8.500.000</strong></p>
-                                        </div>
-                                        <div class="ml-3 flex h-6 items-center">
-                                            <input id="radio_lunas" name="opsi_kuliah" type="radio" value="lunas" checked onclick="toggleMode(false)" class="h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-600">
-                                        </div>
-                                    </div>
-
-                                    <div class="relative flex items-start p-4 border rounded-lg hover:bg-slate-50 cursor-pointer" onclick="document.getElementById('radio_angsur').click()">
-                                        <div class="min-w-0 flex-1 text-sm">
-                                            <label for="radio_angsur" class="font-medium text-slate-900">Diangsur (Cicilan)</label>
-                                            <p class="text-slate-500">Total Akumulasi <br><strong class="text-slate-700">Rp 9.000.000</strong></p>
-                                        </div>
-                                        <div class="ml-3 flex h-6 items-center">
-                                            <input id="radio_angsur" name="opsi_kuliah" type="radio" value="angsur" onclick="toggleMode(true)" class="h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-600">
-                                        </div>
-                                    </div>
+                            @if($status_bayar['KUL_FULL'])
+                                <div class="p-4 bg-green-50 border border-green-200 rounded-lg flex items-center">
+                                    <svg class="h-6 w-6 text-green-600 mr-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                    <span class="font-bold text-green-800">Biaya Kuliah Sudah LUNAS (Full Payment)</span>
                                 </div>
-
-                                <div id="area_angsuran" class="hidden mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
-                                    <label class="block text-sm font-medium text-slate-900 mb-2">Mau dibagi berapa kali angsuran?</label>
-                                    <select id="select_jumlah_angsuran" onchange="generateInputAngsuran()" class="block w-full max-w-xs rounded-md border-0 py-2 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-600 sm:text-sm sm:leading-6">
-                                        <option value="2">2 Kali (Rp 4.500.000 / bayar)</option>
-                                        <option value="3">3 Kali (Rp 3.000.000 / bayar)</option>
-                                        <option value="4">4 Kali (Rp 2.250.000 / bayar)</option>
-                                    </select>
-                                    
-                                    <div class="mt-4">
-                                        <p class="text-xs text-slate-500 mb-2 font-medium uppercase tracking-wide">Rincian Tagihan yang akan dibuat:</p>
-                                        <div id="container_input_angsuran" class="space-y-3">
+                            @else
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="pilihan_metode_bayar">
+                                        @if(!$plan_angsuran)
+                                        <div class="relative flex items-start p-4 border rounded-lg hover:bg-slate-50 cursor-pointer" onclick="document.getElementById('radio_lunas').click()">
+                                            <div class="min-w-0 flex-1 text-sm">
+                                                <label for="radio_lunas" class="font-medium text-slate-900">Langsung Lunas</label>
+                                                <p class="text-slate-500">Bayar Sekaligus <br><strong class="text-green-600">Rp 8.500.000</strong></p>
                                             </div>
+                                            <div class="ml-3 flex h-6 items-center">
+                                                <input id="radio_lunas" name="opsi_kuliah" type="radio" value="lunas" checked onclick="toggleMode(false)" class="h-4 w-4 border-slate-300 text-blue-600">
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                        <div class="relative flex items-start p-4 border rounded-lg hover:bg-slate-50 cursor-pointer" onclick="document.getElementById('radio_angsur').click()">
+                                            <div class="min-w-0 flex-1 text-sm">
+                                                <label for="radio_angsur" class="font-medium text-slate-900">Diangsur (Cicilan)</label>
+                                                <p class="text-slate-500">Total Akumulasi <br><strong class="text-slate-700">Rp 9.000.000</strong></p>
+                                            </div>
+                                            <div class="ml-3 flex h-6 items-center">
+                                                <input id="radio_angsur" name="opsi_kuliah" type="radio" value="angsur" onclick="toggleMode(true)" class="h-4 w-4 border-slate-300 text-blue-600">
+                                            </div>
+                                        </div>
                                     </div>
-                                    <p class="text-xs text-red-500 mt-2 italic">*Hapus baris angsuran yang <b>TIDAK</b> dibayarkan hari ini.</p>
+
+                                    <div id="container_biaya_kuliah" class="space-y-3"></div>
+
+                                    <div id="area_opsi_angsuran" class="hidden mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                        <label class="block text-sm font-medium text-slate-900 mb-2">Skema Angsuran</label>
+                                        
+                                        <select id="select_jumlah_angsuran" onchange="generateInputAngsuran()" 
+                                            class="block w-full max-w-xs rounded-md border-0 py-2 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-600 sm:text-sm sm:leading-6 disabled:bg-slate-100 disabled:text-slate-500"
+                                            {{ $plan_angsuran ? 'disabled' : '' }}>
+                                            <option value="2" {{ $plan_angsuran == 2 ? 'selected' : '' }}>2 Kali (Rp 4.500.000 / bayar)</option>
+                                            <option value="3" {{ $plan_angsuran == 3 ? 'selected' : '' }}>3 Kali (Rp 3.000.000 / bayar)</option>
+                                            <option value="4" {{ $plan_angsuran == 4 ? 'selected' : '' }}>4 Kali (Rp 2.250.000 / bayar)</option>
+                                        </select>
+                                        
+                                        @if($plan_angsuran)
+                                            <p class="text-xs text-amber-600 mt-2 font-semibold">*Skema angsuran terkunci karena pembayaran sudah berjalan.</p>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
 
                         <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 flex justify-between items-center">
                             <div>
                                 <span class="text-sm font-medium text-slate-600 block">Total Pembayaran Hari Ini:</span>
-                                <span class="text-xs text-slate-400">(BPP + Penunjang + Biaya Kuliah yg Dibayar)</span>
+                                <span class="text-xs text-slate-400">(Item yang dicentang)</span>
                             </div>
                             <span id="display_total" class="text-2xl font-bold text-blue-700 font-mono">Rp 0</span>
                         </div>
-
                     </div>
 
                     <div class="px-4 py-4 sm:px-6 bg-slate-50 rounded-b-xl flex justify-end gap-x-4 border-t border-slate-100">
@@ -133,87 +158,110 @@
     <script>
         const TOTAL_ANGSURAN = 9000000;
         const TOTAL_LUNAS = 8500000;
+        const IS_NEW_STUDENT = @json($is_new_student);
+        const EXISTING_PLAN = @json($plan_angsuran);
+        const PAID_INSTALLMENTS = @json($paid_angsuran); 
 
         function formatRupiah(angka) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
         }
 
-        // Fungsi Hitung Total Realtime
         function hitungTotal() {
             let total = 0;
-            
-            // 1. Ambil BPP & Penunjang
-            total += Number(document.getElementById('input_bpp').value) || 0;
-            total += Number(document.getElementById('input_penunjang').value) || 0;
-
-            // 2. Ambil Biaya Kuliah
-            const isLunas = document.getElementById('radio_lunas').checked;
-            if (isLunas) {
-                total += TOTAL_LUNAS;
-            } else {
-                // Loop semua input angsuran yang ADA di form
-                const inputs = document.querySelectorAll('.input-angsuran-item');
-                inputs.forEach(input => {
-                    total += Number(input.value) || 0;
-                });
-            }
-
-            // Update Tampilan Total
+            const checkboxes = document.querySelectorAll('input[name="detail_bayar[]"]:checked');
+            checkboxes.forEach((cb) => {
+                let parts = cb.value.split('|');
+                total += parseInt(parts[1]);
+            });
             document.getElementById('display_total').innerText = formatRupiah(total);
         }
 
-        // Toggle Tampilan Lunas vs Angsur
         function toggleMode(isAngsur) {
-            const area = document.getElementById('area_angsuran');
+            const areaOpsi = document.getElementById('area_opsi_angsuran');
+            const container = document.getElementById('container_biaya_kuliah');
+            container.innerHTML = ''; 
+
             if (isAngsur) {
-                area.classList.remove('hidden');
-                generateInputAngsuran(); // Auto generate saat mode aktif
+                areaOpsi.classList.remove('hidden');
+                generateInputAngsuran();
             } else {
-                area.classList.add('hidden');
-                // Hapus semua input angsuran agar tidak terhitung
-                document.getElementById('container_input_angsuran').innerHTML = '';
-            }
-            hitungTotal();
-        }
-
-        // Logic Auto-Split Angsuran
-        function generateInputAngsuran() {
-            const container = document.getElementById('container_input_angsuran');
-            const jumlahKali = parseInt(document.getElementById('select_jumlah_angsuran').value);
-            
-            // Hitung nominal per kali bayar
-            const nominalPerBayar = TOTAL_ANGSURAN / jumlahKali;
-
-            // Reset container
-            container.innerHTML = '';
-
-            for (let i = 1; i <= jumlahKali; i++) {
+                areaOpsi.classList.add('hidden');
                 const div = document.createElement('div');
-                div.className = "flex items-center gap-2";
-                div.id = `row_angsuran_${i}`;
-                
+                div.className = "relative flex items-start p-4 border border-green-200 bg-green-50 rounded-lg";
+
                 div.innerHTML = `
-                    <span class="text-sm font-medium text-slate-500 w-24">Angsuran ${i}</span>
-                    <div class="relative rounded-md shadow-sm w-full">
-                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"><span class="text-slate-500 sm:text-xs">Rp</span></div>
-                        <input type="number" name="angsuran[]" value="${nominalPerBayar}" class="input-angsuran-item block w-full rounded-md border-0 py-1.5 pl-8 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 font-mono" oninput="hitungTotal()" required>
+                    <div class="flex h-6 items-center">
+                        <input name="detail_bayar[]" value="Biaya Kuliah (Lunas)|${TOTAL_LUNAS}" type="checkbox" checked class="h-4 w-4 rounded border-slate-300 text-blue-600" onchange="hitungTotal()">
                     </div>
-                    <button type="button" onclick="hapusBaris(this)" class="text-red-500 hover:text-red-700" title="Hapus jika tidak dibayar sekarang">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
+                    <div class="ml-3 text-sm leading-6">
+                        <label class="font-medium text-slate-900">Biaya Kuliah (Pelunasan Awal)</label>
+                        <p class="text-slate-500 font-mono">${formatRupiah(TOTAL_LUNAS)}</p>
+                    </div>
                 `;
                 container.appendChild(div);
             }
             hitungTotal();
         }
 
-        function hapusBaris(btn) {
-            btn.parentElement.remove();
+        function generateInputAngsuran() {
+            const container = document.getElementById('container_biaya_kuliah');
+            const jumlahKali = parseInt(document.getElementById('select_jumlah_angsuran').value);
+            const nominalPerBayar = TOTAL_ANGSURAN / jumlahKali;
+
+            container.innerHTML = '';
+
+            for (let i = 1; i <= jumlahKali; i++) {
+                const div = document.createElement('div');
+                
+              
+                const isPaid = PAID_INSTALLMENTS.includes(i);
+                
+                if (isPaid) {
+                  
+                    div.className = "relative flex items-center p-3 border border-green-200 bg-green-50 rounded-lg";
+                    div.innerHTML = `
+                        <div class="flex h-6 items-center">
+                            <svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                        </div>
+                        <div class="ml-3 flex-1 text-sm leading-6 flex justify-between">
+                            <label class="font-bold text-green-800">Angsuran ke-${i}</label>
+                            <span class="font-mono text-green-700 font-semibold">LUNAS (${formatRupiah(nominalPerBayar)})</span>
+                        </div>
+                    `;
+                } else {
+                    div.className = "relative flex items-center p-3 border border-slate-200 rounded-lg";
+                    
+                    let isNext = false;
+                    if (IS_NEW_STUDENT && i === 1) isNext = true;
+                    if (!IS_NEW_STUDENT && i === (Math.max(0, ...PAID_INSTALLMENTS) + 1)) isNext = true;
+
+                    let checkedAttr = isNext ? 'checked' : '';
+                    let labelExtra = isNext ? '<span class="text-blue-600 text-xs font-bold ml-2">(Bayar Sekarang)</span>' : '';
+
+                    div.innerHTML = `
+                        <div class="flex h-6 items-center">
+                            <input name="detail_bayar[]" value="Biaya Kuliah (Angsuran ${i})|${nominalPerBayar}" type="checkbox" ${checkedAttr} class="h-4 w-4 rounded border-slate-300 text-blue-600" onchange="hitungTotal()">
+                        </div>
+                        <div class="ml-3 flex-1 text-sm leading-6 flex justify-between">
+                            <label class="font-medium text-slate-700">Angsuran ke-${i} ${labelExtra}</label>
+                            <span class="font-mono font-bold text-slate-900">${formatRupiah(nominalPerBayar)}</span>
+                        </div>
+                    `;
+                }
+                container.appendChild(div);
+            }
             hitungTotal();
         }
 
-        // Init Hitung Awal
-        hitungTotal();
+        if (EXISTING_PLAN) {
+            document.getElementById('radio_angsur').checked = true;
+            toggleMode(true);
+            document.getElementById('pilihan_metode_bayar').classList.add('hidden');
+        } else {
+            toggleMode(false);
+        }
+        
+        hitungTotal(); 
     </script>
 </body>
 </html>

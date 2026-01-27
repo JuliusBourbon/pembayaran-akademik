@@ -11,6 +11,7 @@ return new class extends Migration
             CREATE TABLE jenis_biaya (
                 id_jenis_biaya CHAR(3) NOT NULL,
                 nama_biaya VARCHAR(50),
+                nominal INT,
                 PRIMARY KEY (id_jenis_biaya)
             )
         ");
