@@ -99,12 +99,29 @@ class MahasiswaController extends Controller
 
             // dd($request);
 
+            $get_noreg = DB::select("SELECT @no_reg as no_reg");
+            if (empty($get_noreg) || is_null($get_noreg[0]->no_reg)) {
+                throw new \Exception("Gagal mengambil Nomor Registrasi dari database.");
+            }
 
-            return redirect('/unikom')->with('success', 'Pendaftaran Berhasil! Username/No.Registrasi Anda adalah: ');
+            $no_reg = $get_noreg[0]->no_reg;
+
+            $dataMhs = DB::select("SELECT * FROM mahasiswa WHERE no_reg = ? LIMIT 1", [$no_reg]);
+            if (empty($dataMhs)) {
+                throw new \Exception("Data berhasil disimpan, tapi gagal diambil kembali.");
+            }
+
+            return redirect()->route('daftar.sukses')->with('daftarsukses', $dataMhs[0]);
 
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
         }
+    }
+
+    public function successview()
+    {
+        $mhs = session('daftarsukses');
+        return view('daftar_sukses', ['mhs' => $mhs]);
     }
 
     public function updateview($no_reg) {

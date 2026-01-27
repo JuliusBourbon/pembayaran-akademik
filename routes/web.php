@@ -25,6 +25,7 @@ Route::get('/unikom', [MahasiswaController::class, 'getprodi'], function () {
     return view('landing_page');
     });
 Route::post('/unikom', [MahasiswaController::class, 'store'])->name('mhs.store');
+Route::get('/unikom/pendaftaran-berhasil', [MahasiswaController::class, 'successview'])->name('daftar.sukses');
 Route::delete('/detail/{no_reg}/delete', [MahasiswaController::class, 'delete'])->name('deletemhs');
 
 Route::get('/mahasiswa/login', [AuthController::class, 'loginMahasiswaForm']);
