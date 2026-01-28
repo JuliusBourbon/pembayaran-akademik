@@ -33,8 +33,11 @@
 
             <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">Masuk</button>
         </form>
-        
-       
+
+        <div class="w-full flex flex-col items-center mt-15 gap-3">
+            <h1>Login sebagai Petugas: </h1>
+            <a href="/login" class="border border-stone-300 shadow-2xl py-2 px-10 hover:bg-stone-100 rounded-md">Login menggunakan akun Petugas</a>
+        </div>
     </div>
 </body>
 </html>
