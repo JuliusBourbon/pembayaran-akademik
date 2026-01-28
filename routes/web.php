@@ -6,9 +6,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\TransaksiController;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [MahasiswaController::class, 'getprodi'], function () {
+    return view('landing_page');
 });
+Route::post('/', [MahasiswaController::class, 'store'])->name('mhs.store');
 
 Route::get('/login', [AuthController::class, 'loginView'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.store');
@@ -21,11 +22,7 @@ Route::get('/detail/{no_reg}', [MahasiswaController::class, 'detail'])->name('de
 Route::get('/detail/{no_reg}/edit', [MahasiswaController::class, 'updateview'])->name('updatemhs');
 Route::post('/detail/{no_reg}/edit', [MahasiswaController::class, 'update'])->name('updatemhs.store');
 Route::get('/transaksi/cetak/{no_transaksi}', [TransaksiController::class, 'cetak']);
-Route::get('/unikom', [MahasiswaController::class, 'getprodi'], function () {
-    return view('landing_page');
-    });
-Route::post('/unikom', [MahasiswaController::class, 'store'])->name('mhs.store');
-Route::get('/unikom/pendaftaran-berhasil', [MahasiswaController::class, 'successview'])->name('daftar.sukses');
+Route::get('/pendaftaran-berhasil', [MahasiswaController::class, 'successview'])->name('daftar.sukses');
 Route::delete('/detail/{no_reg}/delete', [MahasiswaController::class, 'delete'])->name('deletemhs');
 
 Route::get('/mahasiswa/login', [AuthController::class, 'loginMahasiswaForm']);

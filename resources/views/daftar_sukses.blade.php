@@ -47,7 +47,7 @@
                     <div class="flex">
                         <div class="ml-3">
                             <p class="text-blue-700 text-center">
-                                Gunakan akun ini pada halaman <a target="_blank" href="/mahasiswa/login" class="hover:underline font-bold">dashboard mahasiswa</a> untuk melihat informasi pembayaran
+                                Gunakan akun ini pada halaman <a target="_blank" href="/mahasiswa/login" class="hover:underline font-bold">portal mahasiswa</a> untuk melihat informasi pembayaran
                             </p>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                     <button onclick="window.print()" class="flex-1 bg-blue-800 hover:bg-blue-900 text-white font-semibold py-3 px-4 rounded-lg transition shadow-md flex justify-center items-center gap-2">
                         Download Bukti Pendaftaran
                     </button>
-                    <a href="{{ url('/unikom') }}" class="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-lg transition text-center">
+                    <a href="{{ url('/') }}" class="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-lg transition text-center">
                         Selesai
                     </a>
                 </div>
@@ -84,7 +84,7 @@
                     </p>
                 </div>
 
-                <a href="{{ url('/unikom') }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition shadow-sm">
+                <a href="{{ url('/') }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition shadow-sm">
                     Kembali
                 </a>
             </div>

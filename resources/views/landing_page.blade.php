@@ -16,7 +16,7 @@
             </div>
             <div class="flex flex-1 justify-end">
                 <a href="{{ url('/mahasiswa/login') }}" class="text-sm font-semibold leading-6 text-slate-900 hover:text-blue-600">
-                    Dashboard Mahasiswa <span>&rarr;</span>
+                    Portal Mahasiswa <span>&rarr;</span>
                 </a>
             </div>
         </nav>
