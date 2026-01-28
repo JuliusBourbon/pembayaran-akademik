@@ -173,7 +173,7 @@ class TransaksiController extends Controller
             }
 
             DB::commit(); 
-            return redirect('/cari-mahasiswa?q='.$no_reg)->with('success', $pesan);
+            return redirect('/transaksi/cetak/' . $no_transaksi)->with('success', $pesan);
 
         } catch (\Exception $e) {
             DB::rollBack(); 
