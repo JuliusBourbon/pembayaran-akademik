@@ -10,8 +10,11 @@
 <body class="bg-slate-100 min-h-screen flex items-center justify-center font-sans">
     <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8 border border-slate-200">
         <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-slate-800">Sistem Pembayaran Akademik</h1>
-            <p class="text-slate-500 text-sm mt-1">Universitas Komputer Indonesia</p>
+            <h1 class="text-2xl font-bold text-slate-800">Login Sistem Pembayaran</h1>
+            <p class="text-slate-500 text-lg mt-1">Universitas Komputer Indonesia</p>
+            <div class="flex w-full justify-center">
+                <img src="https://minweb.unikom.ac.id/wp-content/uploads/2025/09/UNIKOM-LOGO-2025-High-Resolution-1024x1024.png" class="w-40 my-5" alt="Logo unikom">
+            </div>
         </div>
 
         @if(session('error'))

@@ -7,8 +7,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-50 h-screen flex items-center justify-center">
-    <div class="w-full max-w-[30%] bg-white px-6 py-20 rounded-xl shadow-lg">
-        <h2 class="text-3xl font-bold text-center text-slate-900 mb-15">Portal Mahasiswa</h2>
+    <div class="w-full lg:max-w-[30%] bg-white px-6 py-15 rounded-xl shadow-lg">
+        <h2 class="text-3xl font-bold text-center text-slate-900 mb-10">Portal Mahasiswa</h2>
+        <div class="flex w-full justify-center">
+            <img src="https://minweb.unikom.ac.id/wp-content/uploads/2025/09/UNIKOM-LOGO-2025-High-Resolution-1024x1024.png" class="w-60 mb-10" alt="Logo unikom">
+        </div>
         
         @if(session('error'))
             <div class="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">{{ session('error') }}</div>
@@ -20,6 +23,7 @@
                 <label class="block text-sm font-medium text-slate-700">No. Registrasi</label>
                 <input type="text" name="no_reg" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" required>
             </div>
+
             
             <div class="mb-6">
                 <label class="block text-sm font-medium text-slate-700">Password</label>
