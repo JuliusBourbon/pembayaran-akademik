@@ -20,8 +20,8 @@
         <form action="{{ url('/mahasiswa/login') }}" method="POST">
             @csrf
             <div class="mb-4">
-                <label class="block text-sm font-medium text-slate-700">No. Registrasi</label>
-                <input type="text" name="no_reg" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" required>
+                <label class="block text-sm font-medium text-slate-700">No. Registrasi /Username</label>
+                <input type="text" name="identity" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" required>
             </div>
 
             

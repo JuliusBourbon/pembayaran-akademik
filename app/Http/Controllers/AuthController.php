@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -64,31 +65,57 @@ class AuthController extends Controller
         return view('login_mahasiswa');
     }
 
-    public function loginMahasiswa(Request $request)
-    {
+    public function loginMahasiswa(Request $request){
         $request->validate([
-            'no_reg' => 'required',
+            'identity' => 'required', 
             'password' => 'required'
         ]);
 
-        $mhs = \App\Models\Mahasiswa::where('no_reg', $request->no_reg)->first();
+        $inputIdentity = $request->input('identity');
+        $inputPassword = $request->input('password');
+        $users = DB::select("
+            SELECT * FROM mahasiswa 
+            WHERE no_reg = :reg OR username = :user 
+            LIMIT 1
+        ", [
+            'reg'  => $inputIdentity,
+            'user' => $inputIdentity
+        ]);
+        $mhs = $users[0];
 
-        if (!$mhs) {
-            return back()->with('error', 'No Registrasi tidak ditemukan.');
-        }
+        $trx = DB::select("
+            SELECT SUM(total_bayar) as total 
+            FROM transaksi 
+            WHERE no_reg = :no_reg
+        ", ['no_reg' => $mhs->no_reg]);
 
+        $totalBayar = $trx[0]->total ?? 0;
+        $isLunas = $totalBayar >= 19500000;
         $loginSuccess = false;
-        if ($mhs->nim != null) {
-            if ($mhs->password === $request->password) {
-                $loginSuccess = true;
+
+        if ($isLunas) {
+            if ($inputIdentity !== $mhs->username) {
+                return back()->with('error', 'Status pembayaran LUNAS. Silakan login menggunakan USERNAME Anda (bukan No. Reg).');
             }
-        } 
-        else {
-            if ($request->password === $mhs->no_reg) {
+
+            if ($inputPassword === $mhs->password) {
                 $loginSuccess = true;
+            } else {
+                return back()->with('error', 'Password salah.');
+            }
+
+        } else {
+            if ($inputIdentity !== $mhs->no_reg) {
+                return back()->with('error', 'Status pembayaran BELUM LUNAS. Silakan login menggunakan NO. REGISTRASI.');
+            }
+
+            if ($inputPassword === $mhs->no_reg || $inputPassword === $mhs->password) {
+                $loginSuccess = true;
+            } else {
+                return back()->with('error', 'Password salah. Gunakan No. Registrasi sebagai password.');
             }
         }
-        
+
         if ($loginSuccess) {
             Session::put('mhs_logged_in', true);
             Session::put('mhs_no_reg', $mhs->no_reg);
@@ -97,7 +124,7 @@ class AuthController extends Controller
             return redirect('/mahasiswa/dashboard');
         }
 
-        return back()->with('error', 'Password salah. Gunakan No. Registrasi sebagai password jika belum lunas.');
+        return back()->with('error', 'Login gagal.');
     }
 
     public function logoutMahasiswa()
