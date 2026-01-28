@@ -9,9 +9,10 @@
 </head>
 <body class="bg-slate-100 min-h-screen flex items-center justify-center font-sans">
     <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8 border border-slate-200">
-        <div class="text-center mb-8">
+        <div class="relative mb-8 text-center">
             <h1 class="text-2xl font-bold text-slate-800">Login Sistem Pembayaran</h1>
             <p class="text-slate-500 text-lg mt-1">Universitas Komputer Indonesia</p>
+            
             <div class="flex w-full justify-center">
                 <img src="https://minweb.unikom.ac.id/wp-content/uploads/2025/09/UNIKOM-LOGO-2025-High-Resolution-1024x1024.png" class="w-40 my-5" alt="Logo unikom">
             </div>
@@ -45,7 +46,12 @@
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                 Masuk
             </button>
+
         </form>
+        <br>
+        <div class="w-full flex flex-col items-center mt-15 gap-3">
+            <a href="/" class="border border-stone-300 shadow-2xl py-2 px-10 hover:bg-stone-100 rounded-md">Landing Page &rArr;</a>
+        </div>
     </div>
 </body>
 </html>
