@@ -3,7 +3,8 @@
         <div class="flex justify-between h-16">
             
             <div class="flex">
-                <div class="flex items-center">
+                <div class="flex items-center gap-2">
+                    <img src="https://minweb.unikom.ac.id/wp-content/uploads/2025/09/UNIKOM-LOGO-2025-High-Resolution-1024x1024.png" class="w-9 h-auto" alt="Logo unikom">
                     <span class="text-xl font-bold cursor-default">Unikom</span>
                 </div>
 
