@@ -103,6 +103,6 @@ class AuthController extends Controller
     public function logoutMahasiswa()
     {
         Session::forget(['mhs_logged_in', 'mhs_no_reg', 'mhs_nama']);
-        return redirect('/mahasiswa/login');
+        return redirect('/');
     }
 }
