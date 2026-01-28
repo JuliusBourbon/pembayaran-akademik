@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\TransaksiController;
 
@@ -14,7 +15,7 @@ Route::post('/', [MahasiswaController::class, 'store'])->name('mhs.store');
 Route::get('/login', [AuthController::class, 'loginView'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/cari-mahasiswa', [MahasiswaController::class, 'index']);
 Route::get('/transaksi/bayar/{no_reg}', [TransaksiController::class, 'create']);
 Route::post('/transaksi/proses', [TransaksiController::class, 'store']);
