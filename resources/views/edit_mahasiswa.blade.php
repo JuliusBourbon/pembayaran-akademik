@@ -32,7 +32,7 @@
                                 <div class="sm:col-span-3">
                                     <label for="username" class="block text-sm font-medium leading-6 text-slate-900">Username</label>
                                     <div class="mt-2">
-                                        <input type="text" name="username" id="username" value="{{ old('username', $mhs->username) }}" class="block w-full rounded-md border-0 py-2 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                                        <input type="text" name="username" id="username" value="{{ old('username', $mhs->username) }}" class="block w-full rounded-md border-0 py-2 px-3 bg-slate-200 text-slate-600 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 cursor-not-allowed focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6" disabled>
                                     </div>
                                 </div>
 
@@ -103,7 +103,7 @@
                                 @if($mhs->nim) <div class="sm:col-span-4">
                                     <label for="email_kampus" class="block text-sm font-medium leading-6 text-slate-900">Email Kampus</label>
                                     <div class="mt-2">
-                                        <input type="email" name="email_kampus" id="email_kampus" value="{{ old('email_kampus', $mhs->email_kampus) }}" class="block w-full rounded-md border-0 py-2 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                                        <input type="email" name="email_kampus" id="email_kampus" value="{{ old('email_kampus', $mhs->email_kampus) }}" class="block w-full rounded-md border-0 py-2 px-3 bg-slate-200 cursor-not-allowed text-slate-600 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6" disabled>
                                     </div>
                                 </div>
                                 @endif
