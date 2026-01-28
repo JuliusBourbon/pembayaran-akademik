@@ -85,10 +85,16 @@
                                             @endif
                                             
                                             @if($total == 0)
-                                                <form action="{{ route('deletemhs', $mhs->no_reg) }}" method="POST" onsubmit="return confirm('Hapus {{ $mhs->nama_mhs }}?');" class="inline">
+                                                <form id="form-hapus-mahasiswa" action="{{ route('deletemhs', $mhs->no_reg) }}" method="POST" onsubmit="return confirm('Hapus {{ $mhs->nama_mhs }}?');" class="inline">
                                                     @csrf @method('DELETE')
-                                                    <button class="text-red-500 hover:text-red-700 ml-2">Hapus</button>
+                                                    <button type="button" class="text-red-500 hover:text-red-700 ml-2" onclick="document.getElementById('modal-hapus').classList.toggle('hidden')">Hapus</button>
                                                 </form>
+                                                @include('modal-konfirmasi', [
+                                                    'modalId' => 'modal-hapus',
+                                                    'formId'  => 'form-hapus-mahasiswa',
+                                                    'judul'   => 'Hapus data mahasiswa?',
+                                                    'pesan'   => 'Data yang dihapus tidak dapat dikemabalikan!'
+                                                ])
                                             @endif
                                         </div>
                                     </td>
