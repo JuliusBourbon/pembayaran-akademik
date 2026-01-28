@@ -46,7 +46,7 @@
             </div>
 
             <div class="lg:col-span-2">
-                <form action="{{ url('/transaksi/proses') }}" method="POST" class="bg-white shadow-sm ring-1 ring-slate-900/5 sm:rounded-xl" onsubmit="return confirm('Pastikan data pembayaran sudah benar. Lanjutkan?');">
+                <form id="form-transaksi-pembayaran" action="{{ url('/transaksi/proses') }}" method="POST" class="bg-white shadow-sm ring-1 ring-slate-900/5 sm:rounded-xl" onsubmit="return confirm('Pastikan data pembayaran sudah benar. Lanjutkan?');">
                     @csrf
                     <input type="hidden" name="no_reg" value="{{ $mhs->no_reg }}">
 
@@ -150,9 +150,17 @@
                         <a href="{{ url('/cari-mahasiswa') }}" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 sm:mt-0 sm:w-auto">
                             Kembali
                         </a>
-                        <button type="submit" class="rounded-md bg-blue-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-all">Simpan Transaksi</button>
+                        <button type="button" onclick="document.getElementById('modal-simpan').classList.toggle('hidden')" class="cursor-pointer rounded-md bg-blue-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
+                            Simpan Transaksi
+                        </button>
                     </div>
                 </form>
+                @include('modal-konfirmasi', [
+                    'modalId' => 'modal-simpan',
+                    'formId'  => 'form-transaksi-pembayaran',
+                    'judul'   => 'Simpan Pembayaran?',
+                    'pesan'   => 'Pastikan nominal uang yang diterima sudah sesuai. Data tidak dapat diubah setelah disimpan.'
+                ])
             </div>
         </div>
     </main>
