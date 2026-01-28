@@ -147,7 +147,9 @@
                     </div>
 
                     <div class="px-4 py-4 sm:px-6 bg-slate-50 rounded-b-xl flex justify-end gap-x-4 border-t border-slate-100">
-                        <a href="{{ url('/cari-mahasiswa?q='.$mhs->no_reg) }}" class="text-sm font-semibold text-slate-900 leading-6 px-3 py-2">Batal</a>
+                        <a href="{{ url('/cari-mahasiswa') }}" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 sm:mt-0 sm:w-auto">
+                            Kembali
+                        </a>
                         <button type="submit" class="rounded-md bg-blue-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-all">Simpan Transaksi</button>
                     </div>
                 </form>
