@@ -216,4 +216,19 @@ class MahasiswaController extends Controller
             return back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }
     }
+
+    public function updateByMhs (Request $request, $no_reg) {
+        $field = $request->input('field');
+        $request->validate([
+            $field => 'required'
+        ]);
+
+        DB::table('mahasiswa')
+            ->where('no_reg', $no_reg)
+            ->update([
+                $field => $request->input($field)
+            ]);
+
+        return redirect('/mahasiswa/dashboard')->with('success', 'Data berhasil diperbarui.');
+    }
 }

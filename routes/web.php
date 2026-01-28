@@ -34,6 +34,7 @@ Route::get('/mahasiswa/dashboard', function () {
     }
     return view('mahasiswa.dashboard');
 });
+Route::post('/mahasiswa/dashboard/{no_reg}', [MahasiswaController::class, 'updateByMhs'])->name('updateByMhs');
     
 // Route::get('/table', [TableController::class, 'read'], function () {
 //     return view('table');
