@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pendaftaran Mahasiswa Baru - Universitas Unggulan</title>
+    <title>Universitas Unggul</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-white font-sans antialiased text-slate-900">
-    <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
+    <nav class="relative z-50 flex items-center justify-between p-6 lg:px-8" aria-label="Global">
         <a href="/" class="flex items-center gap-3 text-2xl font-bold text-blue-600 tracking-tight cursor-pointer">
             <img src="https://minweb.unikom.ac.id/wp-content/uploads/2025/09/UNIKOM-LOGO-2025-High-Resolution-1024x1024.png" class="w-12 h-auto" alt="Logo unikom">
             <p>Unikom<span class="text-yellow-400">Unggul</span></p>
@@ -25,8 +25,7 @@
         </div>
         <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 text-center">
             <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
-                Wujudkan Masa Depan<br>
-                <span class="text-blue-600">Bersama Kami</span>
+                Wujudkan Masa Depan<br><span class="text-blue-600">Bersama Kami</span>
             </h1>
             <p class="mt-6 text-lg leading-8 text-slate-600">
                 Pendaftaran Mahasiswa Baru Tahun Ajaran 2026/2027 telah dibuka. Bergabunglah dengan ribuan talenta muda lainnya dan kembangkan potensimu di sini.
