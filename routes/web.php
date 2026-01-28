@@ -35,12 +35,3 @@ Route::get('/mahasiswa/dashboard', function () {
     return view('mahasiswa.dashboard');
 });
 Route::post('/mahasiswa/dashboard/{no_reg}', [MahasiswaController::class, 'updateByMhs'])->name('updateByMhs');
-    
-// Route::get('/table', [TableController::class, 'read'], function () {
-//     return view('table');
-// });
-// Route::get('/table/tambahprodi', [ProdiController::class, 'createView'])->name('prodi.createview');
-// Route::post('/table/tambahprodi', [ProdiController::class, 'store'])->name('prodi.store');
-// Route::delete('/table/hapusprodi/{id}', [ProdiController::class, 'delete'])->name('prodi.delete');
-// Route::get('/table/ubahprodi/{id}', [ProdiController::class, 'updateView'])->name('prodi.updateview');
-// Route::post('/table/ubahprodi/{id}', [ProdiController::class, 'update'])->name('prodi.update');
