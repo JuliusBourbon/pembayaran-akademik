@@ -20,7 +20,7 @@
         </div>
 
         <div class="bg-white shadow-sm ring-1 ring-slate-900/5 sm:rounded-xl overflow-hidden">
-            <form action="{{ route('updatemhs.store', $mhs->no_reg) }}" method="POST">
+            <form id="form-edit-mhs" action="{{ route('updatemhs.store', $mhs->no_reg) }}" method="POST">
                 @csrf
                 <div class="px-4 py-6 sm:p-8">
                     <div class="space-y-12">
@@ -114,15 +114,20 @@
                 </div>
 
                 <div class="bg-slate-50 px-4 py-4 sm:flex sm:flex-row-reverse sm:px-6 border-t border-slate-200 gap-3">
-                    <button type="submit" class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto">
-                        Simpan Perubahan
+                    <button type="button" onclick="document.getElementById('modal-edit').classList.toggle('hidden')" class="cursor-pointer rounded-md bg-blue-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
+                        Simpan Transaksi
                     </button>
                     <a href="{{ url('/detail/' . $mhs->no_reg) }}" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 sm:mt-0 sm:w-auto">
                         Batal
                     </a>
                 </div>
-
             </form>
+            @include('modal-konfirmasi', [
+                'modalId' => 'modal-edit',
+                'formId'  => 'form-edit-mhs',
+                'judul'   => 'Simpan Perubahan?',
+                'pesan'   => 'Pastikan data sudah sesuai'
+            ])
         </div>
 
     </main>
