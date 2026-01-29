@@ -10,8 +10,7 @@ use App\Models\Mahasiswa;
 
 class TransaksiController extends Controller
 {
-    public function create($no_reg)
-    {
+    public function create($no_reg){
         if (!Session::has('is_logged_in')) return redirect('/login');
 
         $mahasiswa = DB::select("
@@ -80,8 +79,8 @@ class TransaksiController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request){
+        // 1. Validasi Input
         $request->validate([
             'no_reg'       => 'required',
             'detail_bayar' => 'required|array', 
@@ -91,44 +90,73 @@ class TransaksiController extends Controller
         $petugas = Session::get('id_user');
         $items_dibayar = $request->input('detail_bayar'); 
 
+        // 2. Persiapan Data
         $total_transaksi = 0;
-        $data_insert_detail = [];
+        $data_details = []; 
         $no_transaksi = 'TRX-' . date('Ymd') . '-' . rand(1000, 9999);
 
+        // Parsing data item (Format: "Nama Biaya|Nominal")
         foreach ($items_dibayar as $item) {
             $parts = explode('|', $item);
             if(count($parts) < 2) continue; 
+            
             $nama_biaya = $parts[0];
             $nominal    = (int)$parts[1];
             $total_transaksi += $nominal;
-            $data_insert_detail[] = [
-                'no_transaksi' => $no_transaksi,
-                'jenis_biaya'  => $nama_biaya,
-                'nominal'      => $nominal
+            
+            // Simpan ke array sementara untuk loop insert nanti
+            $data_details[] = [
+                'nama_biaya' => $nama_biaya,
+                'nominal'    => $nominal
             ];
         }
 
-        if ($total_transaksi <= 0) return back()->with('error', 'Total pembayaran tidak boleh 0.');
+        if ($total_transaksi <= 0) {
+            return back()->with('error', 'Total pembayaran tidak boleh 0.');
+        }
 
+        // 3. Mulai Transaksi Database
         DB::beginTransaction();
         try {
-            $id_petugas = Session::get('id_user');
-
-            DB::table('transaksi')->insert([
-                'no_transaksi' => $no_transaksi,
-                'tgl_bayar'    => now(),
-                'no_reg'       => $no_reg,
-                'id_petugas'   => $petugas,
-                'total_bayar'  => $total_transaksi
+            // A. INSERT KE TABEL TRANSAKSI (SQL MANUAL)
+            // Menggunakan parameter binding (?) untuk keamanan
+            DB::insert("
+                INSERT INTO transaksi (no_transaksi, tgl_bayar, no_reg, id_petugas, total_bayar) 
+                VALUES (?, NOW(), ?, ?, ?)
+            ", [
+                $no_transaksi,
+                $no_reg,
+                $petugas,
+                $total_transaksi
             ]);
 
-           
-            DB::table('transaksi_detail')->insert($data_insert_detail);
-            $riwayat_biaya = DB::table('transaksi')
-                ->join('transaksi_detail', 'transaksi.no_transaksi', '=', 'transaksi_detail.no_transaksi')
-                ->where('transaksi.no_reg', $no_reg)
-                ->pluck('transaksi_detail.jenis_biaya')
-                ->toArray();
+            // B. INSERT KE TABEL TRANSAKSI_DETAIL (SQL MANUAL DALAM LOOP)
+            foreach ($data_details as $detail) {
+                DB::insert("
+                    INSERT INTO transaksi_detail (no_transaksi, jenis_biaya, nominal) 
+                    VALUES (?, ?, ?)
+                ", [
+                    $no_transaksi,
+                    $detail['nama_biaya'],
+                    $detail['nominal']
+                ]);
+            }
+
+            // C. CEK RIWAYAT PEMBAYARAN (SQL MANUAL JOIN)
+            // Mengambil semua jenis biaya yang PERNAH dibayar oleh No Reg ini
+            $raw_riwayat = DB::select("
+                SELECT td.jenis_biaya 
+                FROM transaksi t
+                JOIN transaksi_detail td ON t.no_transaksi = td.no_transaksi
+                WHERE t.no_reg = ?
+            ", [$no_reg]);
+
+            // Konversi hasil object stdClass ke array simple agar fungsi in_array() bisa jalan
+            $riwayat_biaya = array_map(function($item) {
+                return $item->jenis_biaya;
+            }, $raw_riwayat);
+
+            // Logika Pengecekan
             $check_bpp = in_array('Biaya Pengembangan Pendidikan', $riwayat_biaya);
             $check_pnj = in_array('Biaya Penunjang', $riwayat_biaya);
             
@@ -140,21 +168,40 @@ class TransaksiController extends Controller
                 }
             }
 
-            $mhs = DB::table('mahasiswa')->where('no_reg', $no_reg)->first();
+            // D. AMBIL DATA MAHASISWA (SQL MANUAL)
+            $mhs_data = DB::select("SELECT * FROM mahasiswa WHERE no_reg = ? LIMIT 1", [$no_reg]);
+            
+            // Pastikan data mahasiswa ada
+            if (empty($mhs_data)) {
+                throw new \Exception("Data mahasiswa tidak ditemukan");
+            }
+            
+            $mhs = $mhs_data[0]; // Ambil object pertama
             $nim_baru = $mhs->nim;
             $pesan = "Pembayaran berhasil disimpan.";
 
+            // E. GENERATE NIM JIKA SYARAT TERPENUHI
             if ($nim_baru == null && $check_bpp && $check_pnj && $check_kuliah) {
                 
                 $kode_prodi = $mhs->kode_prodi;
-                $angka_prodi = match($kode_prodi) { 'IF' => '10', 'DKV' => '20', 'TI' => '30', 'SI' => '40', default => '99' };
+                $angka_prodi = match($kode_prodi) { 
+                    'IF' => '10', 'DKV' => '20', 'TI' => '30', 'SI' => '40', default => '99' 
+                };
                 $tahun = date('y'); 
                 $prefix_nim = $angka_prodi . $tahun;
                 
-                $count = DB::table('mahasiswa')->where('nim', 'like', $prefix_nim . '%')->count();
+                // Hitung jumlah mahasiswa dengan prefix NIM yang sama (SQL MANUAL)
+                $count_result = DB::select("
+                    SELECT COUNT(*) as total 
+                    FROM mahasiswa 
+                    WHERE nim LIKE ?
+                ", [$prefix_nim . '%']);
+                
+                $count = $count_result[0]->total;
                 $urut = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
                 $nim_baru = $prefix_nim . $urut;
 
+                // Generate Credential
                 $username_baru = rand(100000, 999999);
                 $pass_raw      = rand(10000000, 99999999); 
                 
@@ -162,11 +209,17 @@ class TransaksiController extends Controller
                 $nama_bersih = preg_replace('/[^a-z0-9]/', '', $nama_depan);
                 $email_baru = $nama_bersih . '.' . $nim_baru . '@mahasiswa.unikom.ac.id';
 
-                DB::table('mahasiswa')->where('no_reg', $no_reg)->update([
-                    'nim'          => $nim_baru,
-                    'username'     => $username_baru,
-                    'password'     => $pass_raw, 
-                    'email_kampus' => $email_baru
+                // F. UPDATE MAHASISWA (SQL MANUAL)
+                DB::update("
+                    UPDATE mahasiswa 
+                    SET nim = ?, username = ?, password = ?, email_kampus = ? 
+                    WHERE no_reg = ?
+                ", [
+                    $nim_baru,
+                    $username_baru,
+                    $pass_raw,
+                    $email_baru,
+                    $no_reg
                 ]);
 
                 $pesan = "SELAMAT! Syarat terpenuhi. Mahasiswa Aktif dengan NIM: $nim_baru";
