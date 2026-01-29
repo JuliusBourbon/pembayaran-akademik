@@ -13,20 +13,16 @@ class DashboardController extends Controller
             return redirect('/login');
         }
 
-        // Hitung total mahasiswa
         $totalMhs = DB::select("SELECT COUNT(*) as total FROM mahasiswa")[0]->total;
 
-        // Hitung total pendapatan (Handle jika null)
         $totalUang = DB::select("SELECT SUM(total_bayar) as total FROM transaksi")[0]->total ?? 0;
 
-        // Hitung transaksi hari ini
         $trxHariIni = DB::select("
             SELECT COUNT(*) as total 
             FROM transaksi 
             WHERE DATE(tgl_bayar) = CURDATE()
         ")[0]->total;
 
-        // Hitung Mahasiswa Lunas (Subquery: Cari yang total bayarnya >= 19.5 Juta)
         $mhsLunas = DB::select("
             SELECT COUNT(*) as total FROM (
                 SELECT no_reg 
@@ -37,7 +33,6 @@ class DashboardController extends Controller
         ")[0]->total;
 
 
-        // 2. DATA GRAFIK/LIST: Sebaran Mahasiswa per Prodi
         $statProdi = DB::select("
             SELECT 
                 m.kode_prodi, 
@@ -50,7 +45,6 @@ class DashboardController extends Controller
         ");
 
 
-        // 3. TABEL: 5 Transaksi Terakhir (Join dengan mahasiswa & petugas)
         $transaksiTerbaru = DB::select("
             SELECT 
                 t.no_transaksi,
@@ -74,5 +68,44 @@ class DashboardController extends Controller
             'statProdi',
             'transaksiTerbaru'
         ));
+    }
+
+    public function history(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate   = $request->input('end_date');
+        $query = "
+            SELECT 
+                t.no_transaksi,
+                t.kode_transaksi,
+                t.tgl_bayar,
+                t.total_bayar,
+                m.nama_mhs,
+                m.kode_prodi,
+                p.username as nama_petugas
+            FROM transaksi t
+            JOIN mahasiswa m ON t.no_reg = m.no_reg
+            LEFT JOIN petugas p ON t.id_petugas = p.id
+            WHERE 1=1
+        ";
+        $bindings = [];
+        if ($startDate) {
+            $query .= " AND DATE(t.tgl_bayar) >= ?";
+            $bindings[] = $startDate;
+        }
+        if ($endDate) {
+            $query .= " AND DATE(t.tgl_bayar) <= ?";
+            $bindings[] = $endDate;
+        }
+        $query .= " ORDER BY t.tgl_bayar DESC";
+
+        $transaksi = DB::select($query, $bindings);
+
+        $totalPemasukan = 0;
+        foreach ($transaksi as $trx) {
+            $totalPemasukan += $trx->total_bayar;
+        }
+
+        return view('riwayat_transaksi', compact('transaksi', 'startDate', 'endDate', 'totalPemasukan'));
     }
 }

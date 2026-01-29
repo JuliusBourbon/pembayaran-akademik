@@ -16,6 +16,7 @@ Route::get('/login', [AuthController::class, 'loginView'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard/riwayat', [DashboardController::class, 'history'])->name('transaksi.history');
 Route::get('/cari-mahasiswa', [MahasiswaController::class, 'index']);
 Route::get('/transaksi/bayar/{no_reg}', [TransaksiController::class, 'create']);
 Route::post('/transaksi/proses', [TransaksiController::class, 'store']);

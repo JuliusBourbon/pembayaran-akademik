@@ -98,7 +98,7 @@
                 <div class="bg-white shadow rounded-lg border border-slate-200 overflow-hidden">
                     <div class="px-4 py-5 sm:px-6 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
                         <h3 class="text-lg leading-6 font-medium text-slate-900">Transaksi Terbaru</h3>
-                        <a href="/laporan" class="text-sm text-blue-600 hover:text-blue-500 font-medium">Lihat Semua &rarr;</a>
+                        <a href="/dashboard/riwayat" class="text-sm text-blue-600 hover:text-blue-500 font-medium">Lihat Semua &rarr;</a>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-slate-200">
