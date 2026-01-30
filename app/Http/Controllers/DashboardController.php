@@ -77,7 +77,6 @@ class DashboardController extends Controller
         $query = "
             SELECT 
                 t.no_transaksi,
-                t.kode_transaksi,
                 t.tgl_bayar,
                 t.total_bayar,
                 m.nama_mhs,
