@@ -71,8 +71,6 @@ class MahasiswaController extends Controller
         ]);
 
         try {
-            // no_reg sama VA di generate
-            // username sama password ambil dari variabel @no_reg
             DB::insert("
                     INSERT INTO mahasiswa (
                         no_reg, username, password, nama_mhs, alamat, telepon, tlp_ortu, kode_prodi, nim, virtual_account, email_kampus

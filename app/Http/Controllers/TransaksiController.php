@@ -80,7 +80,6 @@ class TransaksiController extends Controller
     }
 
     public function store(Request $request){
-        // 1. Validasi Input
         $request->validate([
             'no_reg'       => 'required',
             'detail_bayar' => 'required|array', 
@@ -90,12 +89,10 @@ class TransaksiController extends Controller
         $petugas = Session::get('id_user');
         $items_dibayar = $request->input('detail_bayar'); 
 
-        // 2. Persiapan Data
         $total_transaksi = 0;
         $data_details = []; 
         $no_transaksi = 'TRX-' . date('Ymd') . '-' . rand(1000, 9999);
 
-        // Parsing data item (Format: "Nama Biaya|Nominal")
         foreach ($items_dibayar as $item) {
             $parts = explode('|', $item);
             if(count($parts) < 2) continue; 
@@ -104,7 +101,6 @@ class TransaksiController extends Controller
             $nominal    = (int)$parts[1];
             $total_transaksi += $nominal;
             
-            // Simpan ke array sementara untuk loop insert nanti
             $data_details[] = [
                 'nama_biaya' => $nama_biaya,
                 'nominal'    => $nominal
@@ -115,11 +111,8 @@ class TransaksiController extends Controller
             return back()->with('error', 'Total pembayaran tidak boleh 0.');
         }
 
-        // 3. Mulai Transaksi Database
         DB::beginTransaction();
         try {
-            // A. INSERT KE TABEL TRANSAKSI (SQL MANUAL)
-            // Menggunakan parameter binding (?) untuk keamanan
             DB::insert("
                 INSERT INTO transaksi (no_transaksi, tgl_bayar, no_reg, id_petugas, total_bayar) 
                 VALUES (?, NOW(), ?, ?, ?)
@@ -130,7 +123,6 @@ class TransaksiController extends Controller
                 $total_transaksi
             ]);
 
-            // B. INSERT KE TABEL TRANSAKSI_DETAIL (SQL MANUAL DALAM LOOP)
             foreach ($data_details as $detail) {
                 DB::insert("
                     INSERT INTO transaksi_detail (no_transaksi, jenis_biaya, nominal) 
@@ -142,8 +134,6 @@ class TransaksiController extends Controller
                 ]);
             }
 
-            // C. CEK RIWAYAT PEMBAYARAN (SQL MANUAL JOIN)
-            // Mengambil semua jenis biaya yang PERNAH dibayar oleh No Reg ini
             $raw_riwayat = DB::select("
                 SELECT td.jenis_biaya 
                 FROM transaksi t
@@ -151,12 +141,10 @@ class TransaksiController extends Controller
                 WHERE t.no_reg = ?
             ", [$no_reg]);
 
-            // Konversi hasil object stdClass ke array simple agar fungsi in_array() bisa jalan
             $riwayat_biaya = array_map(function($item) {
                 return $item->jenis_biaya;
             }, $raw_riwayat);
 
-            // Logika Pengecekan
             $check_bpp = in_array('Biaya Pengembangan Pendidikan', $riwayat_biaya);
             $check_pnj = in_array('Biaya Penunjang', $riwayat_biaya);
             
@@ -168,19 +156,16 @@ class TransaksiController extends Controller
                 }
             }
 
-            // D. AMBIL DATA MAHASISWA (SQL MANUAL)
             $mhs_data = DB::select("SELECT * FROM mahasiswa WHERE no_reg = ? LIMIT 1", [$no_reg]);
             
-            // Pastikan data mahasiswa ada
             if (empty($mhs_data)) {
                 throw new \Exception("Data mahasiswa tidak ditemukan");
             }
             
-            $mhs = $mhs_data[0]; // Ambil object pertama
+            $mhs = $mhs_data[0];
             $nim_baru = $mhs->nim;
             $pesan = "Pembayaran berhasil disimpan.";
 
-            // E. GENERATE NIM JIKA SYARAT TERPENUHI
             if ($nim_baru == null && $check_bpp && $check_pnj && $check_kuliah) {
                 
                 $kode_prodi = $mhs->kode_prodi;
@@ -190,7 +175,6 @@ class TransaksiController extends Controller
                 $tahun = date('y'); 
                 $prefix_nim = $angka_prodi . $tahun;
                 
-                // Hitung jumlah mahasiswa dengan prefix NIM yang sama (SQL MANUAL)
                 $count_result = DB::select("
                     SELECT COUNT(*) as total 
                     FROM mahasiswa 
@@ -201,7 +185,6 @@ class TransaksiController extends Controller
                 $urut = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
                 $nim_baru = $prefix_nim . $urut;
 
-                // Generate Credential
                 $username_baru = rand(100000, 999999);
                 $pass_raw      = rand(10000000, 99999999); 
                 
@@ -209,7 +192,6 @@ class TransaksiController extends Controller
                 $nama_bersih = preg_replace('/[^a-z0-9]/', '', $nama_depan);
                 $email_baru = $nama_bersih . '.' . $nim_baru . '@mahasiswa.unikom.ac.id';
 
-                // F. UPDATE MAHASISWA (SQL MANUAL)
                 DB::update("
                     UPDATE mahasiswa 
                     SET nim = ?, username = ?, password = ?, email_kampus = ? 

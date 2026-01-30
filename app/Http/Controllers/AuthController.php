@@ -74,7 +74,6 @@ class AuthController extends Controller
         $inputIdentity = $request->input('identity');
         $inputPassword = $request->input('password');
 
-        // 1. Cari User
         $users = DB::select("
             SELECT * FROM mahasiswa 
             WHERE no_reg = :reg OR username = :user 
@@ -84,33 +83,24 @@ class AuthController extends Controller
             'user' => $inputIdentity
         ]);
 
-        // --- PERBAIKAN DI SINI ---
-        // Cek apakah array $users kosong?
         if (empty($users)) {
             return back()->with('error', 'Akun tidak ditemukan. Periksa No. Registrasi atau Username Anda.');
         }
-        // -------------------------
 
-        // Sekarang aman untuk mengambil index 0
         $mhs = $users[0];
 
-        // 2. Hitung Transaksi
         $trx = DB::select("
             SELECT SUM(total_bayar) as total 
             FROM transaksi 
             WHERE no_reg = :no_reg
         ", ['no_reg' => $mhs->no_reg]);
 
-        // SUM() biasanya selalu mengembalikan 1 row (bisa null), jadi ini relatif aman
-        // Tapi kita pakai null coalescing operator (??) untuk jaga-jaga
         $totalBayar = $trx[0]->total ?? 0;
         
         $isLunas = $totalBayar >= 19500000;
         $loginSuccess = false;
 
-        // 3. Logika Login
         if ($isLunas) {
-            // SKENARIO LUNAS: Wajib Username
             if ($inputIdentity !== $mhs->username) {
                 return back()->with('error', 'Status pembayaran LUNAS. Silakan login menggunakan USERNAME Anda (bukan No. Reg).');
             }
@@ -122,12 +112,10 @@ class AuthController extends Controller
             }
 
         } else {
-            // SKENARIO BELUM LUNAS: Wajib No Reg
             if ($inputIdentity !== $mhs->no_reg) {
                 return back()->with('error', 'Status pembayaran BELUM LUNAS. Silakan login menggunakan NO. REGISTRASI.');
             }
 
-            // Cek password (bisa No Reg atau Password DB)
             if ($inputPassword === $mhs->no_reg || $inputPassword === $mhs->password) {
                 $loginSuccess = true;
             } else {
