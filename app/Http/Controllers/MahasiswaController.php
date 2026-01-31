@@ -19,7 +19,10 @@ class MahasiswaController extends Controller
 
         if ($keyword) {
             $mahasiswa = DB::select("
-                SELECT * FROM mahasiswa 
+                SELECT 
+                    *, 
+                    fn_hitung_sisa_tagihan(no_reg) as sisa_tagihan 
+                FROM mahasiswa 
                 WHERE no_reg LIKE ? 
                 OR nama_mhs LIKE ? 
                 OR nim LIKE ?
@@ -56,12 +59,11 @@ class MahasiswaController extends Controller
 
     public function getprodi(){
         $prodi = DB::select("Select * from prodi");
-
         return view('landing_page', ['prodi' => $prodi]);
     }
 
     public function store(Request $request)
-    {
+    { 
         $request->validate([
             'nama_mhs'   => 'required',
             'alamat'     => 'required',
@@ -95,20 +97,14 @@ class MahasiswaController extends Controller
                 'kode_prodi'     => $request->kode_prodi,
             ]);
 
-            // dd($request);
-
             $get_noreg = DB::select("SELECT @no_reg as no_reg");
             if (empty($get_noreg) || is_null($get_noreg[0]->no_reg)) {
                 throw new \Exception("Gagal mengambil Nomor Registrasi dari database.");
             }
 
             $no_reg = $get_noreg[0]->no_reg;
-
             $dataMhs = DB::select("SELECT * FROM mahasiswa WHERE no_reg = ? LIMIT 1", [$no_reg]);
-            if (empty($dataMhs)) {
-                throw new \Exception("Data berhasil disimpan, tapi gagal diambil kembali.");
-            }
-
+            
             return redirect()->route('daftar.sukses')->with('daftarsukses', $dataMhs[0]);
 
         } catch (\Exception $e) {
@@ -151,47 +147,26 @@ class MahasiswaController extends Controller
             'tlp_ortu'   => 'required|numeric',
         ]);
         
-        try {
+        try { 
+            $passwordVal = null;
             if ($request->filled('password')) {
-                $passwordHash = Hash::make($request->password);
-                DB::update("
-                    UPDATE mahasiswa SET 
-                        password = :password,
-                        nama_mhs = :nama_mhs,
-                        alamat = :alamat,
-                        telepon = :telepon,
-                        tlp_ortu = :tlp_ortu,
-                        kode_prodi = :kode_prodi
-                    WHERE no_reg = :no_reg
-                ", [
-                    'password'     => $passwordHash,
-                    'nama_mhs'     => $request->nama_mhs,
-                    'alamat'       => $request->alamat,
-                    'telepon'      => $request->telepon,
-                    'tlp_ortu'     => $request->tlp_ortu,
-                    'kode_prodi'   => $request->kode_prodi,
-                    'no_reg'       => $no_reg
-                ]);
+                $passwordVal = Hash::make($request->password);
             } else {
-                DB::update("
-                    UPDATE mahasiswa SET 
-                        nama_mhs = :nama_mhs,
-                        alamat = :alamat,
-                        telepon = :telepon,
-                        tlp_ortu = :tlp_ortu,
-                        kode_prodi = :kode_prodi
-                    WHERE no_reg = :no_reg
-                ", [
-                    'nama_mhs'     => $request->nama_mhs,
-                    'alamat'       => $request->alamat,
-                    'telepon'      => $request->telepon,
-                    'tlp_ortu'     => $request->tlp_ortu,
-                    'kode_prodi'   => $request->kode_prodi,
-                    'no_reg'       => $no_reg
-                ]);
+                $oldData = DB::select("SELECT password FROM mahasiswa WHERE no_reg = ?", [$no_reg]);
+                $passwordVal = $oldData[0]->password;
             }
 
-            return redirect('/detail/' . $no_reg)->with('success', 'Data mahasiswa berhasil diperbarui.');
+            DB::statement("CALL sp_update_mahasiswa_full(?, ?, ?, ?, ?, ?, ?)", [
+                $no_reg,
+                $request->nama_mhs,
+                $request->alamat,
+                $request->telepon,
+                $request->tlp_ortu,
+                $request->kode_prodi,
+                $passwordVal
+            ]);
+
+            return redirect('/detail/' . $no_reg)->with('success', 'Data mahasiswa berhasil diperbarui via Stored Procedure.');
 
         } catch (\Illuminate\Database\QueryException $e) {
             return back()->withInput()->with('error', 'Terjadi kesalahan database: ' . $e->getMessage());
@@ -209,7 +184,7 @@ class MahasiswaController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->errorInfo[1] == 1451) {
-                return back()->with('error', 'Gagal menghapus: Mahasiswa ini memiliki riwayat pembayaran. Hapus data transaksi terkait terlebih dahulu.');
+                return back()->with('error', 'Gagal menghapus: Mahasiswa ini memiliki riwayat pembayaran.');
             }
             return back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }

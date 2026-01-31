@@ -12,11 +12,8 @@ class DashboardController extends Controller
         if (!Session::has('is_logged_in')) {
             return redirect('/login');
         }
-
         $totalMhs = DB::select("SELECT COUNT(*) as total FROM mahasiswa")[0]->total;
-
         $totalUang = DB::select("SELECT SUM(total_bayar) as total FROM transaksi")[0]->total ?? 0;
-
         $trxHariIni = DB::select("
             SELECT COUNT(*) as total 
             FROM transaksi 
@@ -24,14 +21,10 @@ class DashboardController extends Controller
         ")[0]->total;
 
         $mhsLunas = DB::select("
-            SELECT COUNT(*) as total FROM (
-                SELECT no_reg 
-                FROM transaksi 
-                GROUP BY no_reg 
-                HAVING SUM(total_bayar) >= 19500000
-            ) as subquery
+            SELECT COUNT(*) as total 
+            FROM v_rekap_pembayaran 
+            WHERE status_bayar = 'Lunas'
         ")[0]->total;
-
 
         $statProdi = DB::select("
             SELECT 
@@ -44,7 +37,6 @@ class DashboardController extends Controller
             ORDER BY total DESC
         ");
 
-
         $transaksiTerbaru = DB::select("
             SELECT 
                 t.no_transaksi,
@@ -55,7 +47,7 @@ class DashboardController extends Controller
                 p.username as nama_petugas
             FROM transaksi t
             JOIN mahasiswa m ON t.no_reg = m.no_reg
-            LEFT JOIN petugas p ON t.id_petugas = p.id
+            LEFT JOIN petugas p ON t.id_petugas = p.id 
             ORDER BY t.tgl_bayar DESC
             LIMIT 10
         ");
@@ -74,6 +66,7 @@ class DashboardController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate   = $request->input('end_date');
+        
         $query = "
             SELECT 
                 t.no_transaksi,
@@ -84,9 +77,10 @@ class DashboardController extends Controller
                 p.username as nama_petugas
             FROM transaksi t
             JOIN mahasiswa m ON t.no_reg = m.no_reg
-            LEFT JOIN petugas p ON t.id_petugas = p.id
+            LEFT JOIN petugas p ON t.id_petugas = p.id 
             WHERE 1=1
         ";
+        
         $bindings = [];
         if ($startDate) {
             $query .= " AND DATE(t.tgl_bayar) >= ?";
